@@ -1,3 +1,9 @@
+# Project ignores
+*.xlsx # Data sources downloaded programmatically
+*.zip  # ZIP files downloaded programmatically
+# End project ignores
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
