@@ -1,0 +1,109 @@
+---
+title: "Medicare Drug Spending"
+output: html_notebook
+---
+
+```{r setup}
+library(feather)
+library(tidyverse)
+library(jsonlite)
+
+```
+
+```{r load_spending_data}
+## -- Spending data --------------------------------------------------------------------------------
+## Read in drug names (brand + generic)
+drugnames <- read_feather('data/drugnames.feather')
+
+## Function to add a column with spending year to a data frame
+add_drug_year <- function(df, yr){
+  mutate(df, drug_year = yr)
+}
+
+drug.years <- 2011:2015
+
+## Read in each year's data set, add year and drug names, and combine into a single data.frame
+spending.data <- map(paste0('data/spending-', drug.years, '.feather'), read_feather) %>%
+  map2(drug.years, add_drug_year) %>%
+  map(bind_cols, drugnames) %>%
+  bind_rows()
+
+```
+
+```{r show_spending_data, results = 'markup'}
+spending.data
+
+```
+
+```{r combine_generics}
+## -- Combine data by year for all brand names for the same generic --------------------------------
+spending.data.bygeneric <- spending.data %>%
+  group_by(drug_year, drugname_generic) %>%
+  summarise(claim_count = sum(claim_count, na.rm = TRUE),
+            total_spending = sum(total_spending, na.rm = TRUE),
+            user_count = sum(user_count, na.rm = TRUE),
+            total_spending_per_user = sum(total_spending_per_user, na.rm = TRUE),
+            unit_count = sum(unit_count, na.rm = TRUE),
+            user_count_non_lowincome = sum(user_count_non_lowincome, na.rm = TRUE),
+            out_of_pocket_avg_non_lowincome = sum(out_of_pocket_avg_non_lowincome, na.rm = TRUE),
+            user_count_lowincome = sum(user_count_lowincome, na.rm = TRUE),
+            out_of_pocket_avg_lowincome = sum(out_of_pocket_avg_lowincome, na.rm = TRUE))
+
+```
+
+# Out-of-pocket cost over time for low-income vs non-low-income users of aripiprazole (Aricept)
+```{r plot_aripiprazole}
+plotdata <- spending.data.bygeneric %>%
+  filter(drugname_generic == 'ARIPIPRAZOLE ') %>%
+  select(drug_year, out_of_pocket_avg_lowincome, out_of_pocket_avg_non_lowincome) %>%
+  gather(key = income_level, value = out_of_pocket,
+         out_of_pocket_avg_lowincome:out_of_pocket_avg_non_lowincome) %>%
+  mutate(income_level = gsub('out_of_pocket_avg_', '', income_level, fixed = TRUE))
+
+ggplot(data = plotdata, aes(x = drug_year, y = out_of_pocket)) +
+  geom_line(aes(group = income_level, colour = income_level)) +
+  geom_point(aes(group = income_level, colour = income_level)) +
+  scale_colour_manual(values = c('#003D79', '#258CF0')) +
+  theme_minimal()
+
+```
+
+```{r load_therapeutic_areas}
+## -- Therapeutic areas ----------------------------------------------------------------------------
+## Read in JSON
+therapeutic.areas <- read_json('data/drug_list.json', simplifyDataFrame = TRUE)
+
+all.areas <- unique(flatten_chr(therapeutic.areas$therapeutic_areas))
+area.abbrevs <- c('cardiology', 'immunology', 'otolaryngology', 'pulmonary', 'family', 'infection',
+                  'neurology', 'sleep', 'musculoskeletal', 'orthopedic', 'gastroenterology',
+                  'pediatrics', 'vaccine', 'hepatology', 'oncology', 'ophthalmology', 'nephrology',
+                  'urology', 'genetic', 'endocrinology', 'rheumatology', 'psychiatry', 'hematology',
+                  'pharmacology', 'nutrition', 'dermatology', 'podiatry', 'obgyn', 'healthyvols',
+                  'trauma', 'device', 'internal', 'dental')
+
+## Create indicators for whether each drug is in each unique therapeutic area
+## Areas are lists in column therapeutic_areas; write function to determine if a given area is
+## included for a particular drug
+in_this_area <- function(area, df){
+  indicator.col <- rep(FALSE, nrow(df))
+  indicator.col[grep(area, df$therapeutic_areas, fixed = TRUE)] <- TRUE
+  indicator.col
+}
+
+## Iterate over all unique therapeutic areas and combine into a matrix -> data.frame
+area.indicators <- do.call(cbind,
+                           map(all.areas, in_this_area, df = therapeutic.areas)) %>%
+  as.data.frame()
+
+## Give useful column names
+names(area.indicators) <- paste0('used.', area.abbrevs)
+
+## Bind indicators with original data set
+therapeutic.areas <- bind_cols(therapeutic.areas, area.indicators)
+
+```
+
+```{r show_therapeutic_areas, results = 'markup'}
+therapeutic.areas
+
+```
