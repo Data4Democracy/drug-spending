@@ -35,7 +35,7 @@ spending.data <- map(paste0('data/spending-', drug.years, '.feather'), read_feat
 ```
 
 ```{r show_spending_data, results = 'markup'}
-spending.data
+head(spending.data)
 
 ```
 
@@ -52,23 +52,6 @@ spending.data.bygeneric <- spending.data %>%
             out_of_pocket_avg_non_lowincome = sum(out_of_pocket_avg_non_lowincome, na.rm = TRUE),
             user_count_lowincome = sum(user_count_lowincome, na.rm = TRUE),
             out_of_pocket_avg_lowincome = sum(out_of_pocket_avg_lowincome, na.rm = TRUE))
-
-```
-
-# Out-of-pocket cost over time for low-income vs non-low-income users of aripiprazole (Aricept)
-```{r plot_aripiprazole}
-plotdata <- spending.data.bygeneric %>%
-  filter(drugname_generic == 'ARIPIPRAZOLE ') %>%
-  select(drug_year, out_of_pocket_avg_lowincome, out_of_pocket_avg_non_lowincome) %>%
-  gather(key = income_level, value = out_of_pocket,
-         out_of_pocket_avg_lowincome:out_of_pocket_avg_non_lowincome) %>%
-  mutate(income_level = gsub('out_of_pocket_avg_', '', income_level, fixed = TRUE))
-
-ggplot(data = plotdata, aes(x = drug_year, y = out_of_pocket)) +
-  geom_line(aes(group = income_level, colour = income_level)) +
-  geom_point(aes(group = income_level, colour = income_level)) +
-  scale_colour_manual(values = c('#003D79', '#258CF0')) +
-  theme_minimal()
 
 ```
 
@@ -108,6 +91,24 @@ therapeutic.areas <- bind_cols(therapeutic.areas, area.indicators)
 ```
 
 ```{r show_therapeutic_areas, results = 'markup'}
-therapeutic.areas
+head(therapeutic.areas)
 
 ```
+
+# Out-of-pocket cost over time for low-income vs non-low-income users of aripiprazole (Aricept)
+```{r plot_aripiprazole}
+plotdata <- spending.data.bygeneric %>%
+  filter(drugname_generic == 'ARIPIPRAZOLE ') %>%
+  select(drug_year, out_of_pocket_avg_lowincome, out_of_pocket_avg_non_lowincome) %>%
+  gather(key = income_level, value = out_of_pocket,
+         out_of_pocket_avg_lowincome:out_of_pocket_avg_non_lowincome) %>%
+  mutate(income_level = gsub('out_of_pocket_avg_', '', income_level, fixed = TRUE))
+
+ggplot(data = plotdata, aes(x = drug_year, y = out_of_pocket)) +
+  geom_line(aes(group = income_level, colour = income_level)) +
+  geom_point(aes(group = income_level, colour = income_level)) +
+  scale_colour_manual(values = c('#003D79', '#258CF0')) +
+  theme_minimal()
+
+```
+
