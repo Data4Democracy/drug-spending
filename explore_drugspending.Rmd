@@ -1,6 +1,10 @@
 ---
 title: "Medicare Drug Spending"
-output: html_notebook
+output:
+  github_document:
+    html_preview: yes
+  html_notebook:
+    code_folding: no
 ---
 
 ```{r setup}
