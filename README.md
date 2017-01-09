@@ -1,4 +1,4 @@
+#### A [Data for Democracy](http://datafordemocracy.org/) project
 # drug-spending
-#### A [Data for Democracy]() project
 
 README coming soon!
