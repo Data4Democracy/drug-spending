@@ -1,6 +1,6 @@
 # Project ignores
-*.xlsx # Data sources downloaded programmatically
-*.zip  # ZIP files downloaded programmatically
+*.xlsx
+*.zip
 # End project ignores
 
 
