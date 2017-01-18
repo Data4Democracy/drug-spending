@@ -24,25 +24,25 @@ rm(spend2011,spend2012,spend2013,spend2014,spend2015)
 
 spend <- spend[order(spend$drugname_generic, spend$drugname_brand, spend$year),]
 
-# add theraputic areas to spend
-
-# load in drug names
-drug_names <- read_feather('../data/drugnames.feather')
-drug_info <- fromJSON('../data/drug_list.json')
-
-
-# format the drug_info names so they can be used to match in the drug_names list
-spend[,'theriputic_areas'] <- NA
-
-for(drug in drug_info$name){
-    name <- toupper(drug)
-    # grab first word from name
-    name <- strsplit(name, split = ' ')
-    match <- grep(name[[1]][1], drug_names$drugname_brand)
-    
-    spend[spend$drugname_brand == drug_names[match,1], "theriputic_areas"] <- drug_info[drug_info$name == drug, "therapeutic_areas" ][[1]]
-    # match first word to any word in spend brand names
-    
-}
+# # add theraputic areas to spend
+# 
+# # load in drug names
+# drug_names <- read_feather('../data/drugnames.feather')
+# drug_info <- fromJSON('../data/drug_list.json')
+# 
+# 
+# # format the drug_info names so they can be used to match in the drug_names list
+# spend[,'theriputic_areas'] <- NA
+# 
+# for(drug in drug_info$name){
+#     name <- toupper(drug)
+#     # grab first word from name
+#     name <- strsplit(name, split = ' ')
+#     match <- grep(name[[1]][1], drug_names$drugname_brand)
+#     
+#     spend[spend$drugname_brand == drug_names[match,1], "theriputic_areas"] <- drug_info[drug_info$name == drug, "therapeutic_areas" ][[1]]
+#     # match first word to any word in spend brand names
+#     
+# }
 
 write_feather(spend, 'combined-spending.feather')
