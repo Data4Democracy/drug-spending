@@ -2,7 +2,7 @@
 
 **Slack:** [#drug-spending](https://datafordemocracy.slack.com/messages/drug-spending/)
 
-**Project Leads:** @mattgawarecki, @jenniferthompson
+[**Project Leads:**](https://github.com/Data4Democracy/read-this-first/blob/master/lead-role-description.md) @mattgawarecki, @jenniferthompson
 
 **Maintainers (people with commit access)**: TBD
 
@@ -18,7 +18,7 @@ In conducting this research, we hope to gain new insights and create a positive 
 ## Getting started
 
 ### Things you should know about
-* **"First-timers" are welcome!** Whether you're trying to learn data science, hone your coding skills, or get started collaborating over the web, we're happy to help. *(Sidenote: with respect to Git and GitHub specifically, our [github-playground]() repo and the #github-help Slack channel are good places to start.)*
+* **"First-timers" are welcome!** Whether you're trying to learn data science, hone your coding skills, or get started collaborating over the web, we're happy to help. *(Sidenote: with respect to Git and GitHub specifically, our [github-playground](https://github.com/Data4Democracy/github-playground) repo and the [#github-help](https://datafordemocracy.slack.com/messages/github-help/) Slack channel are good places to start.)*
 * **We've got (GitHub) Issues.** Ready to dive in and do some good? Check out our issues board. Issues are how we officially keep track of the work we're doing, what we've done, and what we'd like to do next. You can identify different issue types by their tags:
   * `first-pr`: smaller issues to cut your teeth on as a first-time contributor
   * `beginner-friendly`: issues suitable for those with less experience or in need of mentorship
@@ -62,4 +62,3 @@ If you have questions or you'd like to discuss something on your mind, reach out
 * **Link drugs with their therapeutic use(s):** We know which drugs Medicare funding is helping to pay for, but we don't yet have a good idea of which conditions they're being used to treat. Linking these two data points will grant enormous insight into how the American public uses Medicare.
 * **More data:** We could really use some more data to give our analyses some depth and relatability.
 * ***Lots more ideas to come:*** Join us in [#drug-spending](https://datafordemocracy.slack.com/messages/drug-spending/) on Slack to contribute your ideas!
-
