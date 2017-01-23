@@ -19,7 +19,9 @@ shinyUI(fluidPage(
   fluidRow(
       column(4,
             selectInput('drug', 'pick generic name', drug_costs$drugname_generic                        ),
-            submitButton('Apply Changes'))
+            submitButton('Apply Changes')),
+      column(8, 
+             selectInput('brand', 'Select brands', choices = NULL, selected = NULL, multiple = TRUE, width = '100%'))
   ),
   
   fluidRow(
