@@ -6,24 +6,20 @@ library(ggplot2)
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
     
-    #dataset <- reactive({
-    #    drug_costs[drug_costs$drugname_generic == input$drug, ]
-        
-    #})
     observe({
-    drug <- input$drug
-    brand <- input$brand
+    drug <- input$drug # generic drug name
+    brand <- input$brand # selected drug brands 
     
-    dataset <- drug_costs[drug_costs$drugname_generic == drug,]
+    dataset <- drug_costs[drug_costs$drugname_generic == drug,] # select from drug_costs based on generic drug selection
     
     updateSelectInput(session, "brand",
                       choices = unique(dataset$drugname_brand),
                       selected = unique(dataset$drugname_brand)
-    )
+    ) # update the Select input$brand options
     
     if(!is.null(brand)){
-        dataset <- dataset[dataset$drugname_brand %in% brand,]
-    }
+       dataset <- dataset[dataset$drugname_brand %in% brand,]
+    } # allows first selection to show all drugs in that drug. TODO still need to do the same when switching drugs
     
         output$plot1 <- renderPlot({
             
@@ -46,45 +42,33 @@ shinyServer(function(input, output, session) {
         output$plot3 <- renderPlot({
             
             # make total spending plot
-            #ggplot obj
             g <- ggplot(dataset, aes_string(x=dataset$year, y=dataset$total_spending, color = as.factor(dataset$drugname_brand)))
-            #plot features
             g <- g + geom_point() + geom_line() + theme(legend.position = 'none') + labs(x = 'Year', y = 'Total spending')
-            #print plot
             print(g)
         })
         
         #make output$plot4
         output$plot4 <- renderPlot({
             #Avg spending/user
-            #ggplot obj
             g <- ggplot(dataset, aes_string(x = dataset$year, y= dataset$total_spending_per_user, color = as.factor(dataset$drugname_brand)))
-            #plot features
             g <- g + geom_point() + geom_line() + theme(legend.position = 'none') + labs(x = 'Year', y = 'Total spending/User')
-            #print plot
             print(g)
         })
         
         #make output$plot5
         output$plot5 <- renderPlot({
             #Avg out of pocket per lowincome user
-            #ggplot obj
             g <- ggplot(dataset, aes_string(x = dataset$year, y = dataset$out_of_pocket_avg_lowincome, color = as.factor(dataset$drugname_brand)))
-            #plot features
             g <- g + geom_point() + geom_line() +  theme(legend.position = 'none') + labs(x = 'Year', y = 'Avg Out of Pocket Cost', title = 'Low Income')
-            #print plot
             print(g)
         })
     
         #make output$plot6
         output$plot6 <- renderPlot({
             #Avg out of pocket per non lowincome user
-            #ggplot obj
             g <- ggplot(dataset, aes_string(x = dataset$year, y = dataset$out_of_pocket_avg_non_lowincome,
                                               color = as.factor(dataset$drugname_brand)))
-            #plot features
             g <- g + geom_point() + geom_line() + theme(legend.position = 'none') + labs(x = 'Year', y = 'Avg Out of Pocket Cost', title = "Non-Low Income")
-            #print plot
             print(g)
         })
     })
