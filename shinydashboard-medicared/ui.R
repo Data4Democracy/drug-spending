@@ -17,21 +17,26 @@ sidebar <- dashboardSidebar(
 body <- dashboardBody(
   tabItems(
     tabItem(tabName = 'people',
-            h2("Users and Claims"),
+            h2(textOutput("people_headline")),
+            p("Black lines represent overall values for the selected generic; colored lines represent values for individual brands."),
+            p("As one example, a black line would represent the total for all formulations of metformin HCL; one colored line on the same chart represents only Glucophage XR."),
             fluidRow(
               box(plotlyOutput("userCounts")),
               box(plotlyOutput("avgClaimsPerUser"))
             )),
     tabItem(tabName = 'spending',
-            h2("Government and Individual Costs"),
+            h2(textOutput("spending_headline")),
+            p("Black lines represent overall values for the selected generic; colored lines represent values for individual brands."),
+            p("As one example, a black line would represent the total for all formulations of metformin HCL; one colored line on the same chart represents only Glucophage XR."),
             fluidRow(
               box(plotlyOutput("totalSpending")),
               box(plotlyOutput("avgCostPerUser"))
             ),
             fluidRow(
-              box(plotlyOutput("oopLIS")),
-              box(plotlyOutput("oopNLIS"))
-            ))
+              box(plotlyOutput("oop"), width = 12)
+            ),
+            p("Because out-of-pocket costs are specific to individual brands, no overall out-of-pocket cost for a single generic is provided.")
+            )
   )
 )
 

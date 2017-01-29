@@ -56,12 +56,12 @@ spend_overall <- spend %>%
          out_of_pocket_avg_non_lowincome = NA) %>%
   ungroup()
 
-spend <- bind_rows(spend, spend_overall)
-
 ## -- For testing: data set of 100 random generics -------------------------------------------------
 drug_list <- unique(spend$drugname_generic)
 drug_list_random <- sample(drug_list, size = 100)
 write_feather(spend[spend$drugname_generic %in% drug_list_random,], 'testing-random.feather')
+write_feather(spend_overall[spend_overall$drugname_generic %in% drug_list_random,],
+              'testing-random-overall.feather')
 
 ## -- For testing: Take first 100 drugs sorted by # of users ---------------------------------------
 by_user_top100 <- group_by(spend, drugname_generic) %>%
@@ -71,3 +71,5 @@ by_user_top100 <- group_by(spend, drugname_generic) %>%
 
 write_feather(spend[spend$drugname_generic %in% by_user_top100$drugname_generic,],
               'testing-top100-byuser.feather')
+write_feather(spend_overall[spend_overall$drugname_generic %in% by_user_top100$drugname_generic,],
+              'testing-top100-byuser-overall.feather')
