@@ -2,25 +2,27 @@
 library(shiny)
 library(ggplot2)
 
-
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
     
     observe({
-    drug <- input$drug # generic drug name
-    brand <- input$brand # selected drug brands 
-    
-    dataset <- drug_costs[drug_costs$drugname_generic == drug,] # select from drug_costs based on generic drug selection
-    
-    updateSelectInput(session, "brand",
-                      choices = unique(dataset$drugname_brand),
-                      selected = unique(dataset$drugname_brand)
-    ) # update the Select input$brand options
-    
-    if(!is.null(brand)){
-       dataset <- dataset[dataset$drugname_brand %in% brand,]
-    } # allows first selection to show all drugs in that drug. TODO still need to do the same when switching drugs
-    
+        
+        if(! exists("previous_drug")){
+            previous_drug <- NULL
+        }
+        
+        drug <- input$drug # generic drug name
+        brand <- input$brand # selected drug brands 
+        
+        dataset <- drug_costs[drug_costs$drugname_generic == drug,] # select from drug_costs based on generic drug selection
+        
+        
+        if(!is.null(brand)){
+           dataset <- dataset[dataset$drugname_brand %in% brand,]
+        } # allows first selection to show all drugs in that drug. TODO still need to do the same when switching drugs
+        
+        previous_drug <- drug
+        
         output$plot1 <- renderPlot({
             
             # make user count plot
