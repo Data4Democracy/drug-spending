@@ -11,20 +11,37 @@ shinyServer(
     # brand <- input$brand # selected drug brands
 
     output$people_headline <- renderText({
-      paste("Users and Claims,", input$drug)
+      if(input$drug == ''){
+        "Users and Claims"
+      } else{
+        paste("Users and Claims,", input$drug)
+      }
     })
     output$spending_headline <- renderText({
-      paste("Government and Individual Costs,", input$drug)
+      if(input$drug == ''){
+        "Government and Individual Costs"
+      } else{
+        paste("Government and Individual Costs,", input$drug)
+      }
     })
 
     ## Use only data for selected generic
     dataset <- reactive({
+      validate(
+        need(input$drug != "", "Please select a drug from the dropdown menu.")
+      )
       drug_costs[drug_costs$drugname_generic == input$drug,]
     })
     dataset_overall <- reactive({
+      validate(
+        need(input$drug != "", "")
+      )
       drug_costs_overall[drug_costs_overall$drugname_generic == input$drug,]
     })
     oopdata <- reactive({
+      validate(
+        need(input$drug != "", "")
+      )
       oop_costs[oop_costs$drugname_generic == input$drug,]
     })
 
