@@ -1,0 +1,11 @@
+variable,definiton
+HCPCS Code,Healthcare Common Procedure Coding System (HCPCS) code for the drug.
+HCPCS Description,HCPCS Description of the drug.
+Claim Count,Number of Medicare Part B claims.  
+Total Spending,Aggregate drug spending for the Part B program. 
+Beneficiary Count,Number of Medicare Part B fee-for-service beneficiaries utilizing the drug.
+Total Annual Spending per User,Total Spending divided by the number of unique beneficiaries utilizing the drug (Beneficiary Count) during the benefit year.
+Unit Count,"Total dosage units of medication billed during the calendar year (e.g. number of tablets, grams, milliliters or other units)."
+Average Cost per Unit,Total Spending divided by the number of dosage units.   
+Average Beneficiary Cost Share,Average amount that beneficiaries using the drug paid out of pocket during the year. 
+Annual Change in Average Cost per Unit (2015 only),"Annual change in average cost per unit reflects the percent change in average cost per unit between 2014 and 2015.  The average cost per unit is calculated for each year at the HCPCS level by dividing the total payment by total units and then a percentage change in unit costs between the two years is calculated. Available for drugs utilized by more than 5,000 beneficiaries in 2014 and 2015."
