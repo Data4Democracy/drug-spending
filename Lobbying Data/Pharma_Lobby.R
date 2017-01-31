@@ -17,13 +17,16 @@ V(
     client varchar(50), 
     sub varchar(50), 
     total float, 
-    year char (6), 
+    year char (4), 
     catcode varchar(10)
    )
    ")
 
 V("Copy LobbyIndus from '/home/jacob/Data for Democracy/lob_indus.txt' with CSV QUOTE '|' DELIMITER ',';")
-
+V("Drop table if exists pharmalobby")
 V("Create table PharmaLobby as select * from Lobbyindus where catcode in ('H4000', 'H4100', 'H4200', 'H4300', 'H4400', 'H4500');")
 
 write.csv(V("Select * from PharmaLobby;"), file="/home/jacob/Data for Democracy/drug-spending/Lobbying Data/Pharma_Lobby.csv")
+
+
+
