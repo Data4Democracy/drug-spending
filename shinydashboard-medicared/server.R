@@ -6,10 +6,6 @@ library(plotly)
 shinyServer(
   function(input, output, session){
 
-  # observe({
-    # drug <- input$drug # generic drug name
-    # brand <- input$brand # selected drug brands
-
     output$people_headline <- renderText({
       if(input$drug == ''){
         "Users and Claims"
@@ -27,44 +23,43 @@ shinyServer(
 
     ## Use only data for selected generic
     dataset <- reactive({
-      validate(
-        need(input$drug != "", "Please select a drug from the dropdown menu.")
-      )
+      # validate(
+      #   need(input$drug != "", "Please select a drug from the dropdown menu.")
+      # )
       drug_costs[drug_costs$drugname_generic == input$drug,]
     })
     dataset_overall <- reactive({
-      validate(
-        need(input$drug != "", "")
-      )
+      # validate(
+      #   need(input$drug != "", "")
+      # )
       drug_costs_overall[drug_costs_overall$drugname_generic == input$drug,]
     })
     oopdata <- reactive({
-      validate(
-        need(input$drug != "", "")
-      )
+      # validate(
+      #   need(input$drug != "", "")
+      # )
       oop_costs[oop_costs$drugname_generic == input$drug,]
     })
 
-    # updateSelectInput(session, "brand",
-    #                   choices = unique(dataset$drugname_brand),
-    #                   selected = unique(dataset$drugname_brand)
-    # ) # update the Select input$brand options
-
-    # if(!is.null(brand)){
-    #   dataset <- dataset[dataset$drugname_brand %in% brand,]
-    # } # allows first selection to show all drugs in that drug. TODO still need to do the same when switching drugs
-
     ## User counts
     output$userCounts <- renderPlotly({
+
       g <- ggplot(dataset(), aes(x = year, y = user_count, color = drugname_brand)) +
+        ## Attempt at monochromatic color scale... not great because lines that overlap look like
+        ## a darker version of same color and are misleading
+        # geom_point(aes(colour = generic_num), shape = 1, alpha = 0.5) +
+        # geom_line(aes(colour = generic_num), size = 0.5, alpha = 0.5) +
+        # scale_colour_gradient(low = "#3F297F", high = "#AC9ED5") +
         geom_point(shape = 1, alpha = 0.5) +
         geom_line(size = 0.5, alpha = 0.5) +
         geom_point(data = dataset_overall(), shape = 19, alpha = 0.5, colour = 'black') +
         geom_line(data = dataset_overall(), size = 1, alpha = 0.5, colour = 'black') +
         scale_x_continuous(name = '') +
         scale_y_continuous(name = '', labels = comma) +
-        ggtitle('Total Number of Users by Year') +
-        theme(legend.position = 'none')
+        theme_minimal() +
+        theme(legend.position = 'none',
+              panel.grid.major.y = element_line(color = 'grey95'),
+              plot.title = element_text(hjust = 0))
 
       ggplotly(g)
     })
@@ -79,8 +74,9 @@ shinyServer(
         geom_line(data = dataset_overall(), size = 1, alpha = 0.5, colour = 'black') +
         scale_x_continuous(name = '') +
         scale_y_continuous(name = '', labels = comma) +
-        ggtitle('Average Claims Per User by Year') +
-        theme(legend.position = 'none')
+        theme_minimal() +
+        theme(legend.position = 'none',
+              panel.grid.major.y = element_line(color = 'grey95'))
 
       ggplotly(g)
     })
@@ -94,8 +90,9 @@ shinyServer(
         geom_line(data = dataset_overall(), size = 1, alpha = 0.5, colour = 'black') +
         scale_x_continuous(name = '') +
         scale_y_continuous(name = '', labels = comma) +
-        ggtitle('Total Spending by Year, US Dollars') +
-        theme(legend.position = 'none')
+        theme_minimal() +
+        theme(legend.position = 'none',
+              panel.grid.major.y = element_line(color = 'grey95'))
 
       ggplotly(g, tooltip = c('x', 'y', 'colour'))
     })
@@ -110,8 +107,9 @@ shinyServer(
         geom_line(data = dataset_overall(), size = 1, alpha = 0.5, colour = 'black') +
         scale_x_continuous(name = '') +
         scale_y_continuous(name = '', labels = comma) +
-        ggtitle('Average Cost Per User by Year, US Dollars') +
-        theme(legend.position = 'none')
+        theme_minimal() +
+        theme(legend.position = 'none',
+              panel.grid.major.y = element_line(color = 'grey95'))
       ggplotly(g)
     })
 
@@ -123,8 +121,9 @@ shinyServer(
         geom_line(size = 0.5, alpha = 0.5) +
         scale_x_continuous(name = '') +
         scale_y_continuous(name = '', labels = comma) +
-        ggtitle('Average Out of Pocket Cost Per User by Year, US Dollars') +
-        theme(legend.position = 'none')
+        theme_minimal() +
+        theme(legend.position = 'none',
+              panel.grid.major.y = element_line(color = 'grey95'))
 
       ggplotly(g)
     })
