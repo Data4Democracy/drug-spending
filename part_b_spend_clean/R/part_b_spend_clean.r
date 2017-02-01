@@ -6,12 +6,17 @@ library(tidyverse)
 in_file <- "data/Medicare_Drug_Spending_PartB_All_Drugs_YTD_2015_12_06_2016.xlsx"
 
 data_definitons <- read_excel(in_file, 2, skip = 1) %>%
-  select(variable = Variables, definiton = 2)
+  select(variable = Variables, definiton = 2) %>% 
+  mutate(variable = tolower(gsub("( )|(, )","_",variable)),
+         variable = gsub("_\\(2015_only\\)","",variable))
 
 data <- read_excel(in_file, 3, skip = 2) %>% 
   setNames(tolower(gsub("( )|(, )","_",names(.)))) %>% 
   filter(!is.na(hcpcs_code)) %>% 
-  rename(average_beneficiary_cost_share_2015 = average_annual_beneficiary_cost_share_2015)
+  rename(average_beneficiary_cost_share_2015 = average_annual_beneficiary_cost_share_2015) %>% 
+  mutate(hcpcs_description = trimws(hcpcs_description),
+         hcpcs_code = trimws(hcpcs_code)) %>% 
+  select(hcpcs_code, everything())
 
 # Tidy data----
 
