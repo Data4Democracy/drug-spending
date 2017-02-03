@@ -1,0 +1,10 @@
+name: R-shiny
+title:
+account: burrbank
+server: shinyapps.io
+appId: 152251
+bundleId: 691362
+url: https://burrbank.shinyapps.io/r-shiny/
+when: 1485404471.70984
+asMultiple: FALSE
+asStatic: FALSE
