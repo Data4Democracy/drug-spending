@@ -234,7 +234,7 @@ def download_puf(data_dir="../data/", all_columns=True , output_format="feather"
     _download_data(url, data_dir=data_dir, data_name="puf.zip", zipped_data=True)
 
     # read CSV into DataFrame
-    puf = pd.read_csv("../data/2010_PD_Profiles_PUF.csv")
+    puf = pd.read_csv(data_dir + "2010_PD_Profiles_PUF.csv")
 
     # if we don't want to save all columns, drop those except for the three columns 
     # we're interested in.
@@ -293,7 +293,7 @@ def download_rxnorm(data_dir="../data/", output_format="feather"):
          "SAUI", "SCUI", "SDUI", "SAB", "TTY", "CODE", "STR", "SRL", "SUPPRESS", "CVF"]
 
     # we only want column 0 (the RXCUI identifier) and 14 (the commonly used name)
-    rxnorm = pd.read_csv("../data/rrf/RXNCONSO.RRF", sep="|", names=names, index_col=False,
+    rxnorm = pd.read_csv(data_dir + "rrf/RXNCONSO.RRF", sep="|", names=names, index_col=False,
                          usecols=[0,14])
  
     # make all strings lowercase
