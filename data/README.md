@@ -94,12 +94,12 @@ Link to full data dictionary [in progress]
 
 ---
 
-#### 5. [Cleaned drug data](https://data.world/data4democracy/drug-spending/query/?query=--+drugdata_clean.csv%2Fdrugdata_clean+%28drugdata_clean.csv%29%0ASELECT+%2A+FROM+%60drugdata_clean.csv%2Fdrugdata_clean%60+LIMIT+5000)
+#### 5. [Cleaned manufacturer data](https://data.world/data4democracy/drug-spending/query/?query=--+drugdata_clean.csv%2Fdrugdata_clean+%28drugdata_clean.csv%29%0ASELECT+%2A+FROM+%60drugdata_clean.csv%2Fdrugdata_clean%60+LIMIT+5000)
 
 ###### Formats: CSV
 ###### Original Source: CMS.gov
 
-I'll need Stephanie to write this one!
+This dataset contains the information you'd need to link specific drugs and their dosages to the manufacturer - helpful for creating a path from Medicaid spending to lobbying efforts. Brand name and generic or descriptive names are both offered, as well as dosage and package size. Further, there are identifying codes for each drug (HCPCS and NDC).
 
 ---
 
