@@ -99,7 +99,7 @@ Link to full data dictionary [in progress]
 ###### Formats: CSV
 ###### Original Source: CMS.gov
 
-I'll need Stephanie to write this one!
+This dataset comes from https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Part-B-Drugs/McrPartBDrugAvgSalesPrice/2016ASPFiles.html, albeit with a good bit of cleaning. (See manufacturers folder for the scripts). I combined the January 2016 and January 2017 files, because they included different drugs and some other different details, and synchronized the field names. Some of these drugs are regular pharmacy-distributed meds, while others are injectables just found in hospitals or highly restricted cancer drugs or vaccines. There is a column called ASOFDATE that tells you which file year the data comes from. I also cleaned the manufacturer name column, for ease of analysis. 
 
 ---
 
