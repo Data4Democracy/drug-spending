@@ -94,12 +94,12 @@ Link to full data dictionary [in progress]
 
 ---
 
-#### 5. [Cleaned drug data](https://data.world/data4democracy/drug-spending/query/?query=--+drugdata_clean.csv%2Fdrugdata_clean+%28drugdata_clean.csv%29%0ASELECT+%2A+FROM+%60drugdata_clean.csv%2Fdrugdata_clean%60+LIMIT+5000)
+#### 5. [Cleaned manufacturer data](https://data.world/data4democracy/drug-spending/query/?query=--+drugdata_clean.csv%2Fdrugdata_clean+%28drugdata_clean.csv%29%0ASELECT+%2A+FROM+%60drugdata_clean.csv%2Fdrugdata_clean%60+LIMIT+5000)
 
 ###### Formats: CSV
 ###### Original Source: CMS.gov
 
-This dataset comes from https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Part-B-Drugs/McrPartBDrugAvgSalesPrice/2016ASPFiles.html, albeit with a good bit of cleaning. (See manufacturers folder for the scripts). I combined the January 2016 and January 2017 files, because they included different drugs and some other different details, and synchronized the field names. Some of these drugs are regular pharmacy-distributed meds, while others are injectables just found in hospitals or highly restricted cancer drugs or vaccines. There is a column called ASOFDATE that tells you which file year the data comes from. I also cleaned the manufacturer name column, for ease of analysis. 
+This dataset contains the information you'd need to link specific drugs and their dosages to the manufacturer - helpful for creating a path from Medicaid spending to lobbying efforts. Brand name and generic or descriptive names are both offered, as well as dosage and package size. Further, there are identifying codes for each drug (HCPCS and NDC).
 
 ---
 
