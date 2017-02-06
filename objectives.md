@@ -2,7 +2,7 @@
 
 *This document is an overarching view of project goals and research questions. For an up-to-date list of specific to-do items and work in progress, see our [GitHub Issues](https://github.com/Data4Democracy/drug-spending/issues) or [weekly update](https://docs.google.com/document/d/1azJZBPo9438ZOc73Gq2_AWbciKXgwBXiJk5gUAwGA0c/edit).*
 
-At its heart, this project seeks to gain a deeper understanding of where and how United States Medicare tax dollars are being spent. Healthcare is an increasingly important issue for many Americans; the Centers for Medicare and Medicaid Services estimate nearly 41 million Americans were enrolled in Medicare prescription drug coverage programs as of October 2016.^1^
+At its heart, this project seeks to gain a deeper understanding of where and how United States Medicare tax dollars are being spent. Healthcare is an increasingly important issue for many Americans; the Centers for Medicare and Medicaid Services estimate nearly 41 million Americans were enrolled in Medicare prescription drug coverage programs as of October 2016.<sup>[[1]](#citations)</sup>
 
 Because healthcare spending is a very real concern, we want to make it real - not just for people who like reading graphs and looking at statistics, but for everybody. We're harnessing the power of data and modern computing to find answers to the questions people keep asking, and to make those answers clear and easy to understand - questions like:
 
@@ -18,7 +18,7 @@ In conducting this research, we hope to gain new insights and create a positive 
 
 ### Goal 1: Understand how Medicare-related US taxpayer dollars are spent and how this program directly affects older Americans
 
-Medicare is a huge expenditure for the federal government, paid for in part by US citizens’ taxes; in 2015, it accounted for 15% of the federal budget.^2^ We want to help the public understand what these funds are paying for and how this program affects our older generation (and, by extension, all Americans), specifically relating to prescription costs and claims.
+Medicare is a huge expenditure for the federal government, paid for in part by US citizens’ taxes; in 2015, it accounted for 15% of the federal budget.<sup>[[2]](#citations)</sup> We want to help the public understand what these funds are paying for and how this program affects our older generation (and, by extension, all Americans), specifically relating to prescription costs and claims.
 
 We’ll answer questions like:
 
@@ -64,7 +64,7 @@ Medicaid is another US government health program which provides health insurance
 
 Drug development is undeniably incredibly expensive; do the medications which took the most in R&D spending also cost the most to insurance companies/government programs/individuals?
 
-## Citations
+## <a name="citations"></a>Citations
 
 1. Hoadley, Jack; Cubanski, Juliette; and Neuman, Tricia. “Medicare Part D in 2016 and Trends Over Time.” Kaiser Family Foundation, http://kff.org/report-section/medicare-part-d-in-2016-and-trends-over-time-section-1-part-d-enrollment-and-plan-availability/ . Accessed January 31, 2017.
 2. Cubanski, Juliette, and Neuman, Tricia. “The Facts on Medicare Spending and Financing.” Kaiser Family Foundation, http://kff.org/medicare/issue-brief/the-facts-on-medicare-spending-and-financing/ . Accessed January 31, 2017.
