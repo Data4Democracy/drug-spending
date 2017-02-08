@@ -42,6 +42,9 @@ To download the code and data inside this repository, you'll need [Git](https://
 * **Source code and notebooks**: For now, you'll find these in the repository's root directory. This will probably change in the future as we accumulate more files.
 * **Data files**: All data files are located in the `/data` directory. At the moment, there is no further hierarchy beyond this; again, as we accumulate more data, this is likely to change.
 
+### Core data sets
+https://data.world/data4democracy/drug-spending
+
 ### Performing data analysis
 There are many ways to analyze the data in this repository, but "notebook" formats like [Jupyter](http://jupyter.org/install.html) and [R Markdown](http://rmarkdown.rstudio.com/r_notebooks.html) are the most common. The setup process for these tools is in-depth enough to be outside the scope of this README, so please refer to documentation at the aforementioned links if necessary. If something isn't working quite right for you, that's okay! Continue reading to see how you can reach out for assistance.
 
