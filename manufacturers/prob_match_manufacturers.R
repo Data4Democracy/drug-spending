@@ -18,8 +18,9 @@ library(gdata)
 library(stringdist)
 library(stats)
 
-companies_drugs <- read.csv("U://Medicaid_Drug/drugdata_clean.csv", stringsAsFactors = FALSE)
-lobbying <- read.csv("U://Medicaid_Drug/lobbying_data.csv", stringsAsFactors = FALSE)
+companies_drugs <- read.csv("https://query.data.world/s/46oe57ag3sh0edpv6r3o5k150",header=T, stringsAsFactors = FALSE)
+lobbying <- read.csv("https://query.data.world/s/ewv2d6ra6bys8wof3n33apc9",header=T, stringsAsFactors = FALSE)
+
 #Source for lobbying data: https://data.world/data4democracy/drug-spending/file/Pharma_Lobby.csv
 
 c_names <- unique(companies_drugs$LABELER.NAME)
@@ -182,5 +183,5 @@ companies_drugs_keyed <- companies_drugs_keyed[,-15]
 
 
 #Save the keyed files!
-write.csv(lobbying_keyed, "U://Medicaid_Drug/lobbying_keyed.csv")
-write.csv(companies_drugs_keyed, "U://Medicaid_Drug/companies_drugs_keyed.csv")
+write.csv(lobbying_keyed, "lobbying_keyed.csv")
+write.csv(companies_drugs_keyed, "companies_drugs_keyed.csv")
