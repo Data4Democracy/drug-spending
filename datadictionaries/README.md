@@ -17,10 +17,9 @@ you'll need an invitation - more info [here](https://github.com/Data4Democracy/r
 
 1. [Tidy the data](https://en.wikipedia.org/wiki/Tidy_data), using `lower_snake_case` for variable
 and file names and ISO format (YYYY-MM-DD) for dates.
-1. Fork this repo, if you haven't already. In `/datadictionaries`, add a data dictionary for your data source named `[datasource].md`, along with any script(s) you used to scrape, tidy, etc.
-    - We have a [data dictionary template](TEMPLATE.md); for more specifics, check out the other dictionaries available in this folder.
-    - Feel free to create a subfolder for your scripts if you have several files.
-    - Be specific when you name the scripts - eg, `scrape_druglist_from_genomejp.py` is better than `drugscraping.py`.
+1. Fork this repo, if you haven't already.
+1. In either [`python/datawrangling`](../python/datawrangling) or [`R/datawrangling`](../R/datawrangling), as appropriate, add any script(s) you used to scrape, tidy, etc. (If you have multiple scripts, feel free to create a subdirectory.) Be specific when you name the scripts and directories - eg, `scrape_druglist_from_genomejp.py` is better than `drugscraping.py`.
+1. In `/datadictionaries`, add a data dictionary for your data source named `[datasource].md`. We have a [data dictionary template](TEMPLATE.md); for more specifics, check out the other dictionaries available in this folder.
 1. Submit a pull request to this repo with your data dictionary and scripts; it'll be reviewed by our maintainers.
 1. Once the PR is merged, become a contributor to our
 [repo at data.world](https://data.world/data4democracy/drug-spending) if you haven't already, then
