@@ -163,13 +163,13 @@ lobbying_keyed <- merge(lobbying, keyed_companies[,c("l_names", "company_key")],
 #Now it's time to add keys for those in each file that didn't get records. 
 
 lobby_list <- unique(lobbying_keyed$client[is.na(lobbying_keyed$company_key)])
-key_list <- paste0(seq(117,5000), "1002") #using 1002 as the suffix to identify lobbying nonmatches.
+key_list <- paste0(seq(length(unique(keyed_companies$company_key)),5000), "1002") #using 1002 as the suffix to identify lobbying nonmatches.
 lobby_list_table <- as.data.frame(cbind(lobby_list, key_list[1:length(lobby_list)]))
 lobbying_keyed <- merge(lobbying_keyed, lobby_list_table, by.x=c("client"), by.y=c("lobby_list"), all=T)
 lobbying_keyed$company_key <- ifelse(is.na(lobbying_keyed$company_key), as.numeric(as.character(lobbying_keyed$V2)), lobbying_keyed$company_key)
 
 cd_list <- unique(companies_drugs_keyed$LABELER.NAME[is.na(companies_drugs_keyed$company_key)])
-key_list <- paste0(seq(1240,5000), "1003") #using 1003 as the suffix to identify company-drug nonmatches.
+key_list <- paste0(seq(length(unique(lobbying_keyed$company_key)) ,5000), "1003") #using 1003 as the suffix to identify company-drug nonmatches.
 cd_list_table <- as.data.frame(cbind(cd_list, key_list[1:length(cd_list)]))
 companies_drugs_keyed <- merge(companies_drugs_keyed, cd_list_table, by.x=c("LABELER.NAME"), by.y=c("cd_list"), all=T)
 companies_drugs_keyed$company_key <- ifelse(is.na(companies_drugs_keyed$company_key), as.numeric(as.character(companies_drugs_keyed$V2)), companies_drugs_keyed$company_key)
