@@ -4,7 +4,7 @@
 
 [**Project Leads:**](https://github.com/Data4Democracy/read-this-first/blob/master/lead-role-description.md) @mattgawarecki, @jenniferthompson
 
-**Maintainers (people with commit access)**: @dhuppenkothen
+**Maintainers (people with commit access)**: @dhuppenkothen, @skirmer
 
 **Project Description:** At its heart, this project seeks to gain a deeper understanding of where and how Medicare tax dollars are being spent. Healthcare is an increasingly important issue for many Americans; the Centers for Medicare and Medicaid Services estimate *over 41 million Americans* were enrolled in Medicare prescription drug coverage programs as of October 2016.
 
