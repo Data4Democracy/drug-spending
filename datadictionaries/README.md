@@ -9,7 +9,7 @@ and field names for all our data sets. Data is housed in our [repo on data.world
 
 We're glad you asked!
 
-If you have a data source that would help with our objectives [need md version of goals statement],
+If you have a data source that would help with our [objectives](../docs/objectives.md),
 we'd be grateful to have it. Here's an overview of how to most effectively contribute. Please join
 the discussion on our [Slack channel](https://datafordemocracy.slack.com/messages/drug-spending/) -
 our group would love to work with you. (If you're not already in the Data for Democracy Slack team,
