@@ -9,7 +9,7 @@ and field names for all our data sets. Data is housed in our [repo on data.world
 
 We're glad you asked!
 
-If you have a data source that would help with our objectives [need md version of goals statement],
+If you have a data source that would help with our [objectives](../docs/objectives.md),
 we'd be grateful to have it. Here's an overview of how to most effectively contribute. Please join
 the discussion on our [Slack channel](https://datafordemocracy.slack.com/messages/drug-spending/) -
 our group would love to work with you. (If you're not already in the Data for Democracy Slack team,
@@ -17,10 +17,9 @@ you'll need an invitation - more info [here](https://github.com/Data4Democracy/r
 
 1. [Tidy the data](https://en.wikipedia.org/wiki/Tidy_data), using `lower_snake_case` for variable
 and file names and ISO format (YYYY-MM-DD) for dates.
-1. Fork this repo, if you haven't already. In `/data`, add a data dictionary for your data source named `[datasource]_dictionary.md`, along with any script(s) you used to scrape, tidy, etc.
-    - We have a [data dictionary template](data_dictionary_template.md); for more specifics, check out the other data dictionaries available in this folder.
-    - Feel free to create a subfolder for your scripts if you have several files.
-    - Be specific when you name the scripts - eg, `scrape_druglist_from_genomejp.py` is better than `drugscraping.py`.
+1. Fork this repo, if you haven't already.
+1. In either [`python/datawrangling`](../python/datawrangling) or [`R/datawrangling`](../R/datawrangling), as appropriate, add any script(s) you used to scrape, tidy, etc. (If you have multiple scripts, feel free to create a subdirectory.) Be specific when you name the scripts and directories - eg, `scrape_druglist_from_genomejp.py` is better than `drugscraping.py`.
+1. In `/datadictionaries`, add a data dictionary for your data source named `[datasource].md`. We have a [data dictionary template](TEMPLATE.md); for more specifics, check out the other dictionaries available in this folder.
 1. Submit a pull request to this repo with your data dictionary and scripts; it'll be reviewed by our maintainers.
 1. Once the PR is merged, become a contributor to our
 [repo at data.world](https://data.world/data4democracy/drug-spending) if you haven't already, then
@@ -122,3 +121,18 @@ Link to full data dictionary [in progress]
 OpenSecrets has data on lobbying transactions from pharmaceutical companies and their subsidiaries, totaled by year.
 
 Link to full data dictionary [in progress]
+
+---
+
+#### 8. [USP Drug Classification](https://data.world/data4democracy/drug-spending/query/?query=--+usp_drug_classification.csv%2Fusp_drug_classification+%28usp_drug_classification.csv%29%0ASELECT+%2A+FROM+%60usp_drug_classification.csv%2Fusp_drug_classification%60)
+
+###### Formats: text, CSV
+###### Original Source: [KEGG](http://www.genome.jp/kegg-bin/get_htext?htext=br08302.keg) ("USP drug classification" in the drop-down menu)
+
+The US Pharmacopeial Convention Drug Classification system. Contains category and class information on outpatient
+drugs available in the US market. TBD if data also contains information on Part D eligible
+drugs only, though it seems like it likely doesn't: "The USP DC is intended to be complementary to
+the [USP MMG](http://www.usp.org/usp-healthcare-professionals/usp-medicare-model-guidelines) and
+is developed with similar guiding principles, taxonomy, and structure of the USP Categories and Classes."
+
+Link to full data dictionary: [usp_drug_classification.md](usp_drug_classification.md)

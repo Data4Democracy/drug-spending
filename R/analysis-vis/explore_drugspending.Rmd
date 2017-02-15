@@ -16,9 +16,6 @@ library(jsonlite)
 
 ```{r load_spending_data}
 ## -- Spending data --------------------------------------------------------------------------------
-## Read in drug names (brand + generic)
-drugnames <- read_feather('data/drugnames.feather')
-
 ## Function to add a column with spending year to a data frame
 add_drug_year <- function(df, yr){
   mutate(df, drug_year = yr)
@@ -27,9 +24,8 @@ add_drug_year <- function(df, yr){
 drug.years <- 2011:2015
 
 ## Read in each year's data set, add year and drug names, and combine into a single data.frame
-spending.data <- map(paste0('data/spending-', drug.years, '.feather'), read_feather) %>%
+spending.data <- map(paste0('dataworld/spending-', drug.years, '.feather'), read_feather) %>%
   map2(drug.years, add_drug_year) %>%
-  map(bind_cols, drugnames) %>%
   bind_rows()
 
 ```
@@ -38,6 +34,24 @@ spending.data <- map(paste0('data/spending-', drug.years, '.feather'), read_feat
 head(spending.data)
 
 ```
+
+```{r load_atc}
+atc.data <- read.csv('dataworld/atc-codes.csv')
+head(atc.data)
+```
+
+```{r check_drug_uses}
+matt.drug.uses <- read_feather('dataworld/drug_uses.feather')
+
+matt.drug.uses
+
+```
+
+```{r dig}
+length(intersect())
+
+```
+
 
 ```{r combine_generics}
 ## -- Combine data by year for all brand names for the same generic --------------------------------
@@ -92,6 +106,18 @@ therapeutic.areas <- bind_cols(therapeutic.areas, area.indicators)
 
 ```{r show_therapeutic_areas, results = 'markup'}
 head(therapeutic.areas)
+
+```
+
+# Try to merge therapeutic classes with drug names
+```{r join_class_names}
+library(fuzzyjoin)
+
+## Need to extract generic names from name column
+
+# ## -- Separate generic and brand names in therapeutic.areas ----------------------------------------
+# therapeutic.areas <- therapeutic.areas %>%
+#   separate(name, into = c('brand', 'generic'), sep = ' \\(', remove = FALSE, fill = )
 
 ```
 
