@@ -98,3 +98,6 @@ ENV/
 .DS_Store
 .Rproj.user
 
+# test files for cms open payments
+python/datawrangling/cms-openpayment/*.csv
+
