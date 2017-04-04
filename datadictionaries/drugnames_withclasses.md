@@ -16,7 +16,7 @@
 |---------|--------|-----------|
 |drugname_generic  |string  |Brand name of the drug|
 |drugname_brand  |string |Generic name of the drug|
-|rxnorm_rxcui |integer   |Numeric identifiers including missing/unknown. Each represents identifies  a unique drug name which is separately provided.  |
+|rxnorm_rxcui |integer   |Numeric identifiers including missing/unknown. Each represents  a unique drug name which is separately provided.  |
 |drug_major_class |string    |This is a set of 30 possible alpha‐numeric  codes including missing/unknown. It indicates the major class of the drug, such as  cardiovascular medications and central nervous system medications. |
 |drug_class  |string | This is a set of 263 possible alpha‐numeric (two‐letter plus  three‐digit) codes. It indicates the class of the drug, such as antidepressants and  analgesics.  |
 |dmc_name  |string |String description of `drug_major_class`|
