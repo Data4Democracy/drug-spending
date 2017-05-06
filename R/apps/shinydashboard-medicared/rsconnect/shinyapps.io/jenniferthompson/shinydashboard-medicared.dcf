@@ -3,8 +3,17 @@ title: shinydashboard-medicared
 account: jenniferthompson
 server: shinyapps.io
 appId: 153806
+<<<<<<< HEAD
+bundleId: 817560
+url: https://jenniferthompson.shinyapps.io/shinydashboard-medicared/
+when: 1494096408.97006
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: testing-random-overall.feather|testing-random.feather|testing-top100-byuser-overall.feather|testing-top100-byuser.feather|tmp/data4democracy/drug-spending/spending_all_top100.csv
+=======
 bundleId: 697527
 url: https://jenniferthompson.shinyapps.io/shinydashboard-medicared/
 when: 1485966317.5111
 asMultiple: FALSE
 asStatic: FALSE
+>>>>>>> dfff9037e1bb7a54882fe9bf1afa245509d7fe98
