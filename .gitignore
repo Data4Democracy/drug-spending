@@ -101,3 +101,6 @@ ENV/
 # test files for cms open payments
 python/datawrangling/cms-openpayment/*.csv
 
+# R stuff
+.Rhistory
+.Renviron
