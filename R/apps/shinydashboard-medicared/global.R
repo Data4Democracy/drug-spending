@@ -1,18 +1,18 @@
 library(tidyverse)
 
 ## -- Read in data sets used for all plots ---------------------------------------------------------
-## shinyapps.io didn't like this
-# library(data.world)
-# ## Set connection (see package README for details: https://github.com/datadotworld/data.world-r)
-# conn <- data.world()
-#
-# drug_costs_everything <- data.world::query(connection = conn,
-#                                            dataset = 'data4democracy/drug-spending',
-#                                            query = "SELECT * FROM `spending_all_top100`")
+library(data.world)
+## Set connection; API token is saved in .Renviron
+conn <- data.world(token = Sys.getenv("DW_API"))
 
-## Read in dataset direct from data.world
-drug_costs_everything <- read.csv("https://query.data.world/s/1y5at2ieqmq2y4txl98psir76",
-                                  header = TRUE)
+## Read in dataset from data.world
+drug_costs_everything <- data.world::query(connection = conn,
+                                           dataset = 'data4democracy/drug-spending',
+                                           query = "SELECT * FROM `spending_all_top100`")
+
+# ## Alternately: Read in dataset direct from data.world
+# drug_costs_everything <- read.csv("https://query.data.world/s/1y5at2ieqmq2y4txl98psir76",
+#                                   header = TRUE)
 
 drug_costs_brands <- drug_costs_everything %>%
   filter(drugname_brand != "ALL BRAND NAMES")
