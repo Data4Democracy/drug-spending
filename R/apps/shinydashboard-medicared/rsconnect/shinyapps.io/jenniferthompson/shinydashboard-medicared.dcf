@@ -3,8 +3,9 @@ title: shinydashboard-medicared
 account: jenniferthompson
 server: shinyapps.io
 appId: 153806
-bundleId: 697527
+bundleId: 818670
 url: https://jenniferthompson.shinyapps.io/shinydashboard-medicared/
-when: 1485966317.5111
+when: 1494210693.65625
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: .Renviron~|testing-random-overall.feather|testing-random.feather|testing-top100-byuser-overall.feather|testing-top100-byuser.feather

@@ -9,10 +9,13 @@ header <- dashboardHeader(title = 'Medicare Part D Users and Spending, 2011-2015
 sidebar <- dashboardSidebar(
   selectInput(inputId = 'drug',
               label = 'Choose generic drug name:',
-              choices = sort(unique(drug_costs$drugname_generic)),
+              choices = sort(unique(drug_costs_brands$drugname_generic)),
               selectize = FALSE),
   sidebarMenu(menuItem("People", tabName = "people", icon = icon("user", lib = "glyphicon")),
-              menuItem("Spending", tabName = "spending", icon = icon("usd", lib = "glyphicon"))))
+              menuItem("Spending", tabName = "spending", icon = icon("usd", lib = "glyphicon")),
+              menuItem(text = "Source Code", icon = icon("file-code-o"),
+                       href = "https://github.com/Data4Democracy/drug-spending/tree/master/R/apps/shinydashboard-medicared"))
+)
 
 ## -- Define body ----------------------------------------------------------------------------------
 body <- dashboardBody(
@@ -37,20 +40,20 @@ body <- dashboardBody(
             p("As one example, a black line would represent the total for all formulations of metformin HCL; one colored line on the same chart represents only Glucophage XR."),
             fluidRow(
               box(
-                h3("Total Spending by Year, US Dollars"),
+                h3("Total Medicare D Spending, US Dollars"),
                 plotlyOutput("totalSpending")
                 ),
               box(
-                h3("Average Cost Per User by Year, US Dollars"),
+                h3("Average Medicare D Cost Per User, USD"),
                 plotlyOutput("avgCostPerUser")
                 )
             ),
             fluidRow(
               box(
-                h3("Average Out of Pocket Cost Per User by Year, US Dollars"),
+                h3("Average Out of Pocket Cost Per Medicare D User, US Dollars"),
                 plotlyOutput("oop"), width = 12)
             ),
-            p("Because out-of-pocket costs are specific to individual brands, no overall out-of-pocket cost for a single generic is provided.")
+            p("Because out-of-pocket costs are specific to individual brands, no overall out-of-pocket cost for a given generic is provided.")
             )
   )
 )

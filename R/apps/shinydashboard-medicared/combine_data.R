@@ -3,41 +3,32 @@
 ####################################################################################################
 
 library(data.world)
-library(feather)
-library(jsonlite)
 library(tidyverse)
 
 ## Set connection (see package README for details: https://github.com/datadotworld/data.world-r)
-conn <- data.world()
+conn <- data.world(token = Sys.getenv("DW_API")) ## API token is saved in .Renviron
 
-## What data tables are available? (both dplyr and data.world have a query(); must specify)
+## -- What data tables are available? (both dplyr and data.world have a query(); must specify) -----
 data_list <- data.world::query(conn,
                                dataset = 'data4democracy/drug-spending',
                                query = "SELECT * FROM Tables")
 
-drug_uses <- data.world::query(conn,
-                               dataset = 'data4democracy/drug-spending',
-                               query = "SELECT * FROM drug_uses")
+data_list
 
-## -- Read in each year's data set, add year and drug names, combine into a single data.frame ------
-## Function to add a column with spending year to a data frame
-add_drug_year <- function(df, yr){
-  mutate(df, year = yr)
-}
+## We want all the spending-201x tables
 
-## Function to read in one year's CSV from data.world
-## First column is a row number; don't need that
+## -- Read in and combine datasets from all five years ---------------------------------------------
+## Function to read in a single year's CSV from data.world and add year
 get_year <- function(yr){
   data.world::query(connection = conn,
                     dataset = 'data4democracy/drug-spending',
-                    query = paste0("SELECT * FROM `spending-", yr, "`"))[,-1]
+                    query = paste0("SELECT * FROM `spending-", yr, "`"))[,-1] %>%
+                    ## First column is a row number; don't need that
+    mutate(year = yr)
 }
 
-drug_years <- 2011:2015
-
-spend <- map(drug_years, get_year) %>%
-  map2(drug_years, add_drug_year) %>%
-  bind_rows()
+## Read in and combine all years' data
+spend <- map_df(2011:2015, get_year)
 
 ## -- Add a row for each generic with overall summaries of each variable ---------------------------
 spend_overall <- spend %>%
@@ -56,20 +47,19 @@ spend_overall <- spend %>%
          out_of_pocket_avg_non_lowincome = NA) %>%
   ungroup()
 
-## -- For testing: data set of 100 random generics -------------------------------------------------
-drug_list <- unique(spend$drugname_generic)
-drug_list_random <- sample(drug_list, size = 100)
-write_feather(spend[spend$drugname_generic %in% drug_list_random,], 'testing-random.feather')
-write_feather(spend_overall[spend_overall$drugname_generic %in% drug_list_random,],
-              'testing-random-overall.feather')
-
-## -- For testing: Take first 100 drugs sorted by # of users ---------------------------------------
-by_user_top100 <- group_by(spend, drugname_generic) %>%
+## -- Select top 100 generics by number of users across all five years -----------------------------
+by_user_top100 <- group_by(spend_overall, drugname_generic) %>%
   summarise(total_users = sum(user_count, na.rm = TRUE)) %>%
   arrange(desc(total_users)) %>%
   slice(1:100)
 
-write_feather(spend[spend$drugname_generic %in% by_user_top100$drugname_generic,],
-              'testing-top100-byuser.feather')
-write_feather(spend_overall[spend_overall$drugname_generic %in% by_user_top100$drugname_generic,],
-              'testing-top100-byuser-overall.feather')
+## -- For top 100 generics, add ALL BRAND NAMES rows to by-brand-name rows -------------------------
+spend_all_top100 <- bind_rows(spend, spend_overall) %>%
+  filter(drugname_generic %in% by_user_top100$drugname_generic) %>%
+  arrange(drugname_generic)
+
+## -- Write final file to data.world using SDK -----------------------------------------------------
+data.world::uploadDataFrame(connection = conn,
+                            fileName = "spending_all_top100.csv",
+                            dataFrame = spend_all_top100,
+                            dataset = "data4democracy/drug-spending")

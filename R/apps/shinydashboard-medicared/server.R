@@ -26,7 +26,7 @@ shinyServer(
       # validate(
       #   need(input$drug != "", "Please select a drug from the dropdown menu.")
       # )
-      drug_costs[drug_costs$drugname_generic == input$drug,]
+      drug_costs_brands[drug_costs_brands$drugname_generic == input$drug,]
     })
     dataset_overall <- reactive({
       # validate(
