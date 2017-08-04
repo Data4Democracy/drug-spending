@@ -46,30 +46,34 @@ tables_df$tableName
 ```
 
 
-### Which drugs had largest total spending? 
-- Hmmm **Note** the top 4 are all insulin, and seem to be the same drug, but are enetered separately for some reason?
+## *Note* I originally assumed that the amounts in this file had been summed over the years. Actually from the description w/ the file on data.world (which I should have read more closely),  it is the '2011-2015 spending data combined, for the top 100 generics by total number of users in that time frame.'  There is a still a row for each year (the years have not been summed together).
 
-```{r}
-spend_df %>% arrange(desc(total_spending)) %>% select(drugname_brand,drugname_generic,total_spending) %>% head(20)
-##spend_df %>% arrange(desc(total_spending)) %>% select(drugname_generic,total_spending) %>% top_n(5) %>%head ```
-```
-
-### The generic drugname 'INSULIN GLARGINE,HUM.REC.ANLOG' appears in 13 separate rows, and is associated w/ 3 different 'drugname_brand's. Should these be combined? Perhaps grouped by the brand name?
-
-```{r}
-spend_df %>% filter(drugname_generic=='INSULIN GLARGINE,HUM.REC.ANLOG') %>% head(20)
-```
-
-
-### Turns out there are a lot of repeated drug names in the dataset:
-
+We can confirm that there are 100 unique generic names in this dataset:
 ```{r}
 print( paste('Out of ',nrow(spend_df),' rows, there are ',length(unique(spend_df$drugname_generic)),' unique generic names '))
 ```
 
+
+
+### Which generics had largest total spending (for an inidivdual year) ? 
+
 ```{r}
-print( paste('Out of ',nrow(spend_df),' rows, there are ',length(unique(spend_df$drugname_brand)),' unique brand names '))
+spend_df %>% 
+        arrange(desc(total_spending)) %>%           
+        select(drugname_brand,drugname_generic,total_spending,year) %>% 
+        head(20)
 ```
+
+### Which generics had largest total spending over all 5 years?
+```{r}
+spend_df %>% 
+        group_by(drugname_generic) %>%
+        summarise(tot = sum(total_spending)) %>%
+        arrange( desc(tot)) %>%
+        head(20)
+        
+```
+
 
 
 ### Try plotting total spending by year
@@ -78,7 +82,37 @@ spend_df %>%
         group_by(year) %>%
         summarise(tot=sum(total_spending)) %>%
         ggplot(aes(year,tot)) +
-        geom_bar(stat='identity',aes(fill=year))
+        geom_bar(stat='identity',aes(fill=as.factor(year))) +
+        ylab("Total Spending") +
+        ggtitle("Total Year Spending on top 100 generics")
 ```
 
+
+
+### Which generic had largest difference in spending from 2011-2015 ?
+- First group by generic and get yearly totals
+```{r}
+df_yearly <- spend_df %>%
+        group_by(drugname_generic,year) %>%
+        summarize(tot = sum(total_spending)) %>%
+        arrange(drugname_generic,year) 
+head(df_yearly)
+```
+
+- Then compute largest diff between largest and smallest price.
+```{r}
+df_yearly %>% 
+        group_by(drugname_generic) %>%
+        summarise(diff = max(tot)-min(tot)) %>%
+        arrange( desc(diff))
+```
+
+
+###
+
+
+## TO-DO
+- Fit linear regression vs year to each generic, see which ones are rising the most.
+- Look at price per user, not just total price.
+- Look at number of users, number of low-income users, etc.
 

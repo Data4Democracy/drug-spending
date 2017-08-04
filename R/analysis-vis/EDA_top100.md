@@ -73,16 +73,32 @@ tables_df$tableName
 ```
 
 
-### Which drugs had largest total spending? 
-- Hmmm **Note** the top 4 are all insulin, and seem to be the same drug, but are enetered separately for some reason?
+## *Note* I originally assumed that the amounts in this file had been summed over the years. Actually from the description w/ the file on data.world (which I should have read more closely),  it is the '2011-2015 spending data combined, for the top 100 generics by total number of users in that time frame.'  There is a still a row for each year (the years have not been summed together).
+
+We can confirm that there are 100 unique generic names in this dataset:
+
+```r
+print( paste('Out of ',nrow(spend_df),' rows, there are ',length(unique(spend_df$drugname_generic)),' unique generic names '))
+```
+
+```
+## [1] "Out of  2432  rows, there are  100  unique generic names "
+```
+
+
+
+### Which generics had largest total spending (for an inidivdual year) ? 
 
 
 ```r
-spend_df %>% arrange(desc(total_spending)) %>% select(drugname_brand,drugname_generic,total_spending) %>% head(20)
+spend_df %>% 
+        arrange(desc(total_spending)) %>%           
+        select(drugname_brand,drugname_generic,total_spending,year) %>% 
+        head(20)
 ```
 
 ```
-## # A tibble: 20 x 3
+## # A tibble: 20 x 4
 ##            drugname_brand               drugname_generic total_spending
 ##                     <chr>                          <chr>          <dbl>
 ##  1        ALL BRAND NAMES INSULIN GLARGINE,HUM.REC.ANLOG     4416400901
@@ -105,61 +121,45 @@ spend_df %>% arrange(desc(total_spending)) %>% select(drugname_brand,drugname_ge
 ## 18                 NEXIUM         ESOMEPRAZOLE MAGNESIUM     2526306069
 ## 19        ALL BRAND NAMES         FLUTICASONE/SALMETEROL     2432083753
 ## 20        ALL BRAND NAMES            QUETIAPINE FUMARATE     2423843036
+## # ... with 1 more variables: year <int>
 ```
+
+### Which generics had largest total spending over all 5 years?
 
 ```r
-##spend_df %>% arrange(desc(total_spending)) %>% select(drugname_generic,total_spending) %>% top_n(5) %>%head ```
-```
-
-### The generic drugname 'INSULIN GLARGINE,HUM.REC.ANLOG' appears in 13 separate rows, and is associated w/ 3 different 'drugname_brand's. Should these be combined? Perhaps grouped by the brand name?
-
-
-```r
-spend_df %>% filter(drugname_generic=='INSULIN GLARGINE,HUM.REC.ANLOG') %>% head(20)
+spend_df %>% 
+        group_by(drugname_generic) %>%
+        summarise(tot = sum(total_spending)) %>%
+        arrange( desc(tot)) %>%
+        head(20)
 ```
 
 ```
-## # A tibble: 11 x 13
-##            drugname_brand               drugname_generic claim_count
-##                     <chr>                          <chr>       <int>
-##  1 LANTUS/LANTUS SOLOSTAR INSULIN GLARGINE,HUM.REC.ANLOG     8727003
-##  2 LANTUS/LANTUS SOLOSTAR INSULIN GLARGINE,HUM.REC.ANLOG     8855330
-##  3        TOUJEO SOLOSTAR INSULIN GLARGINE,HUM.REC.ANLOG       99137
-##  4        ALL BRAND NAMES INSULIN GLARGINE,HUM.REC.ANLOG     7137741
-##  5        ALL BRAND NAMES INSULIN GLARGINE,HUM.REC.ANLOG     7773632
-##  6        ALL BRAND NAMES INSULIN GLARGINE,HUM.REC.ANLOG     8465704
-##  7        ALL BRAND NAMES INSULIN GLARGINE,HUM.REC.ANLOG     8727003
-##  8        ALL BRAND NAMES INSULIN GLARGINE,HUM.REC.ANLOG     8954467
-##  9 LANTUS/LANTUS SOLOSTAR INSULIN GLARGINE,HUM.REC.ANLOG     7773632
-## 10 LANTUS/LANTUS SOLOSTAR INSULIN GLARGINE,HUM.REC.ANLOG     7137741
-## 11 LANTUS/LANTUS SOLOSTAR INSULIN GLARGINE,HUM.REC.ANLOG     8465704
-## # ... with 10 more variables: total_spending <dbl>, user_count <int>,
-## #   total_spending_per_user <dbl>, unit_count <dbl>, unit_cost_wavg <dbl>,
-## #   user_count_non_lowincome <int>, out_of_pocket_avg_non_lowincome <dbl>,
-## #   user_count_lowincome <int>, out_of_pocket_avg_lowincome <dbl>,
-## #   year <int>
+## # A tibble: 20 x 2
+##                  drugname_generic         tot
+##                             <chr>       <dbl>
+##  1 INSULIN GLARGINE,HUM.REC.ANLOG 28508470761
+##  2         ESOMEPRAZOLE MAGNESIUM 23123163140
+##  3         FLUTICASONE/SALMETEROL 21886759828
+##  4           ROSUVASTATIN CALCIUM 21698484912
+##  5             TIOTROPIUM BROMIDE 18620702056
+##  6                  MEMANTINE HCL 15311498678
+##  7           ATORVASTATIN CALCIUM 14826135404
+##  8          CLOPIDOGREL BISULFATE 14314936581
+##  9            QUETIAPINE FUMARATE 13924286981
+## 10                 DULOXETINE HCL 13672910525
+## 11                  OXYCODONE HCL 11547474499
+## 12                      VALSARTAN  9615610746
+## 13                      CELECOXIB  7733514140
+## 14           METOPROLOL SUCCINATE  7086834869
+## 15           LEVOTHYROXINE SODIUM  6754853939
+## 16              ALBUTEROL SULFATE  5948476058
+## 17      HYDROCODONE/ACETAMINOPHEN  5901484527
+## 18                     OMEPRAZOLE  5825787016
+## 19             POTASSIUM CHLORIDE  5537928041
+## 20                     GABAPENTIN  5111233323
 ```
 
-
-### Turns out there are a lot of repeated drug names in the dataset:
-
-
-```r
-print( paste('Out of ',nrow(spend_df),' rows, there are ',length(unique(spend_df$drugname_generic)),' unique generic names '))
-```
-
-```
-## [1] "Out of  2432  rows, there are  100  unique generic names "
-```
-
-
-```r
-print( paste('Out of ',nrow(spend_df),' rows, there are ',length(unique(spend_df$drugname_brand)),' unique brand names '))
-```
-
-```
-## [1] "Out of  2432  rows, there are  436  unique brand names "
-```
 
 
 ### Try plotting total spending by year
@@ -169,9 +169,71 @@ spend_df %>%
         group_by(year) %>%
         summarise(tot=sum(total_spending)) %>%
         ggplot(aes(year,tot)) +
-        geom_bar(stat='identity',aes(fill=year))
+        geom_bar(stat='identity',aes(fill=as.factor(year))) +
+        ylab("Total Spending") +
+        ggtitle("Total Year Spending on top 100 generics")
 ```
 
-![](EDA_top100_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+![](EDA_top100_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
 
+
+
+### Which generic had largest difference in spending from 2011-2015 ?
+- First group by generic and get yearly totals
+
+```r
+df_yearly <- spend_df %>%
+        group_by(drugname_generic,year) %>%
+        summarize(tot = sum(total_spending)) %>%
+        arrange(drugname_generic,year) 
+head(df_yearly)
+```
+
+```
+## # A tibble: 6 x 3
+## # Groups:   drugname_generic [2]
+##             drugname_generic  year       tot
+##                        <chr> <int>     <dbl>
+## 1 ACETAMINOPHEN WITH CODEINE  2011  75998118
+## 2 ACETAMINOPHEN WITH CODEINE  2012  71117411
+## 3 ACETAMINOPHEN WITH CODEINE  2013  66941860
+## 4 ACETAMINOPHEN WITH CODEINE  2014  64234657
+## 5 ACETAMINOPHEN WITH CODEINE  2015  88516968
+## 6          ALBUTEROL SULFATE  2011 799241691
+```
+
+- Then compute largest diff between largest and smallest price.
+
+```r
+df_yearly %>% 
+        group_by(drugname_generic) %>%
+        summarise(diff = max(tot)-min(tot)) %>%
+        arrange( desc(diff))
+```
+
+```
+## # A tibble: 100 x 2
+##                  drugname_generic       diff
+##                             <chr>      <dbl>
+##  1          CLOPIDOGREL BISULFATE 6825638669
+##  2 INSULIN GLARGINE,HUM.REC.ANLOG 5898753265
+##  3           ATORVASTATIN CALCIUM 4083817019
+##  4            QUETIAPINE FUMARATE 3259919242
+##  5           ROSUVASTATIN CALCIUM 2933614943
+##  6                 DULOXETINE HCL 2437592083
+##  7             TIOTROPIUM BROMIDE 2026517571
+##  8                  DONEPEZIL HCL 1698639752
+##  9                  MEMANTINE HCL 1582852432
+## 10                      VALSARTAN 1479791635
+## # ... with 90 more rows
+```
+
+
+###
+
+
+## TO-DO
+- Fit linear regression vs year to each generic, see which ones are rising the most.
+- Look at price per user, not just total price.
+- Look at number of users, number of low-income users, etc.
 
