@@ -2,13 +2,18 @@
 
 
 
-## Introduction
+# Introduction
+- This notebook contains some explroatory data analysis of the *spending_all_top100.csv* data
+- Part of the d4d *drug_spending* project: <https://github.com/Data4Democracy/drug-spending>
+- Notebook modified from the automatically generated notebook for the `drug-spending` dataset found at: https://data.world/data4democracy/drug-spending, showcasing the use of the `data.world` R package. * Learn more at https://github.com/datadotworld/data.world-r
 
-Modified from the automatically generated notebook for the `drug-spending` dataset found at: 
-https://data.world/data4democracy/drug-spending, showcasing the use of the `data.world` R package. * Learn more at https://github.com/datadotworld/data.world-r
+# TO-DO
+- Fit linear regression vs year to each generic, see which ones are rising the most.
+- Look at price per user, not just total price.
+- Look at number of users, number of low-income users, etc.
 
 
-### Load packages
+## Load packages
 
 ```r
 library(data.world)
@@ -18,7 +23,7 @@ library(tibble)
 ```
 
 
-### List all tables in the **drug-spending** dataset:
+## List all tables in the **drug-spending** dataset:
 
 ```r
 # Datasets are referenced by their URL or path
@@ -87,7 +92,7 @@ print( paste('Out of ',nrow(spend_df),' rows, there are ',length(unique(spend_df
 
 
 
-### Which generics had largest total spending (for an inidivdual year) ? 
+## Which generics had largest total spending (for an inidivdual year) ? 
 
 
 ```r
@@ -124,7 +129,7 @@ spend_df %>%
 ## # ... with 1 more variables: year <int>
 ```
 
-### Which generics had largest total spending over all 5 years?
+## Which generics had largest total spending over all 5 years?
 
 ```r
 spend_df %>% 
@@ -162,7 +167,7 @@ spend_df %>%
 
 
 
-### Try plotting total spending by year
+## Try plotting total spending by year
 
 ```r
 spend_df %>%
@@ -178,7 +183,7 @@ spend_df %>%
 
 
 
-### Which generic had largest difference in spending from 2011-2015 ?
+## Which generic had largest difference in spending from 2011-2015 ?
 - First group by generic and get yearly totals
 
 ```r
@@ -229,11 +234,5 @@ df_yearly %>%
 ```
 
 
-###
 
-
-## TO-DO
-- Fit linear regression vs year to each generic, see which ones are rising the most.
-- Look at price per user, not just total price.
-- Look at number of users, number of low-income users, etc.
 

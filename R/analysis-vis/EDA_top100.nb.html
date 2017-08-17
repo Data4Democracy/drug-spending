@@ -172,28 +172,38 @@ $(document).ready(function () {
 
 <div id="TOC">
 <ul>
-<li><a href="#introduction">Introduction</a><ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#to-do">TO-DO</a><ul>
 <li><a href="#load-packages">Load packages</a></li>
 <li><a href="#list-all-tables-in-the-drug-spending-dataset">List all tables in the <strong>drug-spending</strong> dataset:</a></li>
-</ul></li>
 <li><a href="#here-i-will-only-look-at-the-spending_all_top100.csv-data">Here I will only look at the ‘spending_all_top100.csv’ data</a></li>
-<li><a href="#note-i-originally-assumed-that-the-amounts-in-this-file-had-been-summed-over-the-years.-actually-from-the-description-w-the-file-on-data.world-which-i-should-have-read-more-closely-it-is-the-2011-2015-spending-data-combined-for-the-top-100-generics-by-total-number-of-users-in-that-time-frame.-there-is-a-still-a-row-for-each-year-the-years-have-not-been-summed-together."><em>Note</em> I originally assumed that the amounts in this file had been summed over the years. Actually from the description w/ the file on data.world (which I should have read more closely), it is the ‘2011-2015 spending data combined, for the top 100 generics by total number of users in that time frame.’ There is a still a row for each year (the years have not been summed together).</a><ul>
+<li><a href="#note-i-originally-assumed-that-the-amounts-in-this-file-had-been-summed-over-the-years.-actually-from-the-description-w-the-file-on-data.world-which-i-should-have-read-more-closely-it-is-the-2011-2015-spending-data-combined-for-the-top-100-generics-by-total-number-of-users-in-that-time-frame.-there-is-a-still-a-row-for-each-year-the-years-have-not-been-summed-together."><em>Note</em> I originally assumed that the amounts in this file had been summed over the years. Actually from the description w/ the file on data.world (which I should have read more closely), it is the ‘2011-2015 spending data combined, for the top 100 generics by total number of users in that time frame.’ There is a still a row for each year (the years have not been summed together).</a></li>
 <li><a href="#which-generics-had-largest-total-spending-for-an-inidivdual-year">Which generics had largest total spending (for an inidivdual year) ?</a></li>
 <li><a href="#which-generics-had-largest-total-spending-over-all-5-years">Which generics had largest total spending over all 5 years?</a></li>
 <li><a href="#try-plotting-total-spending-by-year">Try plotting total spending by year</a></li>
 <li><a href="#which-generic-had-largest-difference-in-spending-from-2011-2015">Which generic had largest difference in spending from 2011-2015 ?</a></li>
-<li><a href="#section"></a></li>
 </ul></li>
-<li><a href="#to-do">TO-DO</a></li>
 </ul>
 </div>
 
 <!-- rnb-text-begin -->
-<div id="introduction" class="section level2">
-<h2>Introduction</h2>
-<p>Modified from the automatically generated notebook for the <code>drug-spending</code> dataset found at: <a href="https://data.world/data4democracy/drug-spending" class="uri">https://data.world/data4democracy/drug-spending</a>, showcasing the use of the <code>data.world</code> R package. * Learn more at <a href="https://github.com/datadotworld/data.world-r" class="uri">https://github.com/datadotworld/data.world-r</a></p>
-<div id="load-packages" class="section level3">
-<h3>Load packages</h3>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<ul>
+<li>This notebook contains some explroatory data analysis of the <em>spending_all_top100.csv</em> data</li>
+<li>Part of the d4d <em>drug_spending</em> project: <a href="https://github.com/Data4Democracy/drug-spending" class="uri">https://github.com/Data4Democracy/drug-spending</a></li>
+<li>Notebook modified from the automatically generated notebook for the <code>drug-spending</code> dataset found at: <a href="https://data.world/data4democracy/drug-spending" class="uri">https://data.world/data4democracy/drug-spending</a>, showcasing the use of the <code>data.world</code> R package. * Learn more at <a href="https://github.com/datadotworld/data.world-r" class="uri">https://github.com/datadotworld/data.world-r</a></li>
+</ul>
+</div>
+<div id="to-do" class="section level1">
+<h1>TO-DO</h1>
+<ul>
+<li>Fit linear regression vs year to each generic, see which ones are rising the most.</li>
+<li>Look at price per user, not just total price.</li>
+<li>Look at number of users, number of low-income users, etc.</li>
+</ul>
+<div id="load-packages" class="section level2">
+<h2>Load packages</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShkYXRhLndvcmxkKVxuc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkoZHBseXIpKVxuc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkoZ2dwbG90MikpXG5saWJyYXJ5KHRpYmJsZSlcbmBgYCJ9 -->
@@ -205,8 +215,8 @@ library(tibble)</code></pre>
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-<div id="list-all-tables-in-the-drug-spending-dataset" class="section level3">
-<h3>List all tables in the <strong>drug-spending</strong> dataset:</h3>
+<div id="list-all-tables-in-the-drug-spending-dataset" class="section level2">
+<h2>List all tables in the <strong>drug-spending</strong> dataset:</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBEYXRhc2V0cyBhcmUgcmVmZXJlbmNlZCBieSB0aGVpciBVUkwgb3IgcGF0aFxuZGF0YXNldF9rZXkgPC0gXCJodHRwczovL2RhdGEud29ybGQvZGF0YTRkZW1vY3JhY3kvZHJ1Zy1zcGVuZGluZ1wiXG4jIExpc3QgdGFibGVzIGF2YWlsYWJsZSBmb3IgU1FMIHF1ZXJpZXNcbnRhYmxlc19xcnkgPC0gZGF0YS53b3JsZDo6cXJ5X3NxbChcIlNFTEVDVCAqIEZST00gVGFibGVzXCIpXG50YWJsZXNfZGYgPC0gZGF0YS53b3JsZDo6cXVlcnkodGFibGVzX3FyeSwgZGF0YXNldCA9IGRhdGFzZXRfa2V5KVxuIyBTZWUgd2hhdCBpcyBpbiBpdFxudGFibGVzX2RmJHRhYmxlTmFtZVxuYGBgIn0= -->
@@ -218,18 +228,21 @@ tables_df &lt;- data.world::query(tables_qry, dataset = dataset_key)
 # See what is in it
 tables_df$tableName</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSBcImF0Y19jb2Rlc1wiICAgICAgICAgICAgICAgICAgIFwiY29tcGFuaWVzX2RydWdzX2tleWVkXCIgICAgICAgXCJkYXRhXCIgICAgICAgICAgICAgICAgICAgICAgIFxuIFs0XSBcImRydWdfbGlzdFwiICAgICAgICAgICAgICAgICAgIFwiZHJ1Z191c2VzXCIgICAgICAgICAgICAgICAgICAgXCJkcnVnZGF0YV9jbGVhblwiICAgICAgICAgICAgIFxuIFs3XSBcImRydWduYW1lc193aXRoY2xhc3Nlc1wiICAgICAgIFwiZmRhX25kY19wcm9kdWN0XCIgICAgICAgICAgICAgXCJsb2JieWluZ19rZXllZFwiICAgICAgICAgICAgIFxuWzEwXSBcIm1hbnVmYWN0dXJlcnNfZHJ1Z3NfY2xlYW5lZFwiIFwibWVwc19mdWxsXzIwMTRcIiAgICAgICAgICAgICAgXCJtZXRob2RzXCIgICAgICAgICAgICAgICAgICAgIFxuWzEzXSBcInBoYXJtYV9sb2JieVwiICAgICAgICAgICAgICAgIFwic3BlbmRpbmdfMjAxMVwiICAgICAgICAgICAgICAgXCJzcGVuZGluZ18yMDEyXCIgICAgICAgICAgICAgIFxuWzE2XSBcInNwZW5kaW5nXzIwMTNcIiAgICAgICAgICAgICAgIFwic3BlbmRpbmdfMjAxNFwiICAgICAgICAgICAgICAgXCJzcGVuZGluZ18yMDE1XCIgICAgICAgICAgICAgIFxuWzE5XSBcInNwZW5kaW5nX2FsbF90b3AxMDBcIiAgICAgICAgIFwidXNwX2RydWdfY2xhc3NpZmljYXRpb25cIiAgICAgXCJ2YXJpYWJsZXNcIiAgICAgICAgICAgICAgICAgIFxuIn0= -->
-<pre><code> [1] &quot;atc_codes&quot;                   &quot;companies_drugs_keyed&quot;       &quot;data&quot;                       
- [4] &quot;drug_list&quot;                   &quot;drug_uses&quot;                   &quot;drugdata_clean&quot;             
- [7] &quot;drugnames_withclasses&quot;       &quot;fda_ndc_product&quot;             &quot;lobbying_keyed&quot;             
-[10] &quot;manufacturers_drugs_cleaned&quot; &quot;meps_full_2014&quot;              &quot;methods&quot;                    
-[13] &quot;pharma_lobby&quot;                &quot;spending_2011&quot;               &quot;spending_2012&quot;              
-[16] &quot;spending_2013&quot;               &quot;spending_2014&quot;               &quot;spending_2015&quot;              
-[19] &quot;spending_all_top100&quot;         &quot;usp_drug_classification&quot;     &quot;variables&quot;                  </code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSBcImF0Y19jb2Rlc1wiICAgICAgICAgICAgICAgICAgIFwiY29tcGFuaWVzX2RydWdzX2tleWVkXCIgICAgICBcbiBbM10gXCJkYXRhXCIgICAgICAgICAgICAgICAgICAgICAgICBcImRydWdfbGlzdFwiICAgICAgICAgICAgICAgICAgXG4gWzVdIFwiZHJ1Z191c2VzXCIgICAgICAgICAgICAgICAgICAgXCJkcnVnZGF0YV9jbGVhblwiICAgICAgICAgICAgIFxuIFs3XSBcImRydWduYW1lc193aXRoY2xhc3Nlc1wiICAgICAgIFwiZmRhX25kY19wcm9kdWN0XCIgICAgICAgICAgICBcbiBbOV0gXCJsb2JieWluZ19rZXllZFwiICAgICAgICAgICAgICBcIm1hbnVmYWN0dXJlcnNfZHJ1Z3NfY2xlYW5lZFwiXG5bMTFdIFwibWVwc19mdWxsXzIwMTRcIiAgICAgICAgICAgICAgXCJtZXRob2RzXCIgICAgICAgICAgICAgICAgICAgIFxuWzEzXSBcInBoYXJtYV9sb2JieVwiICAgICAgICAgICAgICAgIFwic3BlbmRpbmdfMjAxMVwiICAgICAgICAgICAgICBcblsxNV0gXCJzcGVuZGluZ18yMDEyXCIgICAgICAgICAgICAgICBcInNwZW5kaW5nXzIwMTNcIiAgICAgICAgICAgICAgXG5bMTddIFwic3BlbmRpbmdfMjAxNFwiICAgICAgICAgICAgICAgXCJzcGVuZGluZ18yMDE1XCIgICAgICAgICAgICAgIFxuWzE5XSBcInNwZW5kaW5nX2FsbF90b3AxMDBcIiAgICAgICAgIFwidXNwX2RydWdfY2xhc3NpZmljYXRpb25cIiAgICBcblsyMV0gXCJ2YXJpYWJsZXNcIiAgICAgICAgICAgICAgICAgIFxuIn0= -->
+<pre><code> [1] &quot;atc_codes&quot;                   &quot;companies_drugs_keyed&quot;      
+ [3] &quot;data&quot;                        &quot;drug_list&quot;                  
+ [5] &quot;drug_uses&quot;                   &quot;drugdata_clean&quot;             
+ [7] &quot;drugnames_withclasses&quot;       &quot;fda_ndc_product&quot;            
+ [9] &quot;lobbying_keyed&quot;              &quot;manufacturers_drugs_cleaned&quot;
+[11] &quot;meps_full_2014&quot;              &quot;methods&quot;                    
+[13] &quot;pharma_lobby&quot;                &quot;spending_2011&quot;              
+[15] &quot;spending_2012&quot;               &quot;spending_2013&quot;              
+[17] &quot;spending_2014&quot;               &quot;spending_2015&quot;              
+[19] &quot;spending_all_top100&quot;         &quot;usp_drug_classification&quot;    
+[21] &quot;variables&quot;                  </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-</div>
 </div>
 <div id="here-i-will-only-look-at-the-spending_all_top100.csv-data" class="section level2">
 <h2>Here I will only look at the ‘spending_all_top100.csv’ data</h2>
@@ -240,22 +253,22 @@ tables_df$tableName</code></pre>
   spend_df  &lt;- data.world::query(spend_qry, dataset = dataset_key)
   glimpse(spend_df)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiT2JzZXJ2YXRpb25zOiAyLDQzMlxuVmFyaWFibGVzOiAxM1xuJCBkcnVnbmFtZV9icmFuZCAgICAgICAgICAgICAgICAgIDxjaHI+IFwiMVNUIFRJRVIgVU5JRklORSBQRU5USVBTXCIsIFwiRFlBWklERVwiLCBcIkZBTU9USURJTkUuLi5cbiQgZHJ1Z25hbWVfZ2VuZXJpYyAgICAgICAgICAgICAgICA8Y2hyPiBcIlBFTiBORUVETEUsIERJQUJFVElDXCIsIFwiVFJJQU1URVJFTkUvSFlEUk9DSExPUk9USC4uLlxuJCBjbGFpbV9jb3VudCAgICAgICAgICAgICAgICAgICAgIDxpbnQ+IDI0NzIsIDI0NjUzLCAzNTEzODkyLCA3NDMwLCAyMzc1OCwgMTc0OCwgNjQ4MTcyNywgLi4uXG4kIHRvdGFsX3NwZW5kaW5nICAgICAgICAgICAgICAgICAgPGRibD4gNS43NjY2NzNlKzA0LCAxLjE3NjAwM2UrMDYsIDQuMjgwNzk3ZSswNywgMi42NDQ3NjUuLi5cbiQgdXNlcl9jb3VudCAgICAgICAgICAgICAgICAgICAgICA8aW50PiA4OTMsIDc4NDUsIDc4ODA0NCwgMzc4NiwgNDEyMSwgMjU5LCA4NjQxMjIsIDE2MDEwOC4uLlxuJCB0b3RhbF9zcGVuZGluZ19wZXJfdXNlciAgICAgICAgIDxkYmw+IDY0LjU3NjQxLCAxNDkuOTA0ODEsIDU0LjMyMTgwLCA2OTguNTY0NDcsIDMyNjAuNjAzLi4uXG4kIHVuaXRfY291bnQgICAgICAgICAgICAgICAgICAgICAgPGRibD4gMjkzMTYwLjAsIDExMDI0MjMuMCwgMTk4OTY3MTIyLjIsIDI1NTUxMi4wLCAxNTcyNjUuLi5cbiQgdW5pdF9jb3N0X3dhdmcgICAgICAgICAgICAgICAgICA8ZGJsPiAwLjE5Njc2NjAsIDEuMDY2NzQ0MSwgMC4yMDg5MDAzLCAxMC4zNTE2NjY5LCA4LjkzOS4uLlxuJCB1c2VyX2NvdW50X25vbl9sb3dpbmNvbWUgICAgICAgIDxpbnQ+IDQyMiwgNTc4NywgMzU2ODQxLCAxNDM3LCAyNDE4LCAxMTUsIDI5NTA2MCwgODE3MjU2Li4uXG4kIG91dF9vZl9wb2NrZXRfYXZnX25vbl9sb3dpbmNvbWUgPGRibD4gNDIuMzQ3MjAsIDEyMC43Mjg5MSwgMjQuNzM4MjksIDEyNy4zODI4NSwgNDc1LjE2OTAuLi5cbiQgdXNlcl9jb3VudF9sb3dpbmNvbWUgICAgICAgICAgICA8aW50PiA0NzEsIDIwNTgsIDQzMTIwMywgMjM0OSwgMTcwMywgMTQ0LCA1NjkwNjIsIDc4MzgyOS4uLlxuJCBvdXRfb2ZfcG9ja2V0X2F2Z19sb3dpbmNvbWUgICAgIDxkYmw+IDcuNTQ1ODYwLCAxMS4wNjQxMjUsIDQuNTQwOTM0LCAxMS4zMzM1ODUsIDI2Ljc4NDc1Li4uXG4kIHllYXIgICAgICAgICAgICAgICAgICAgICAgICAgICAgPGludD4gMjAxMSwgMjAxMSwgMjAxMSwgMjAxMSwgMjAxMywgMjAxMywgMjAxMywgMjAxMywgMjAuLi5cbiJ9 -->
+<!-- rnb-output-begin eyJkYXRhIjoiT2JzZXJ2YXRpb25zOiAyLDQzMlxuVmFyaWFibGVzOiAxM1xuJCBkcnVnbmFtZV9icmFuZCAgICAgICAgICAgICAgICAgIDxjaHI+IFwiMVNUIFRJRVIgVU5JRklORSBQRU5USVBTXCIsIFwiRFlBWklERVwiLCBcIkZBTU9USURJLi4uXG4kIGRydWduYW1lX2dlbmVyaWMgICAgICAgICAgICAgICAgPGNocj4gXCJQRU4gTkVFRExFLCBESUFCRVRJQ1wiLCBcIlRSSUFNVEVSRU5FL0hZRFJPQ0hMT1JPLi4uXG4kIGNsYWltX2NvdW50ICAgICAgICAgICAgICAgICAgICAgPGludD4gMjQ3MiwgMjQ2NTMsIDM1MTM4OTIsIDc0MzAsIDIzNzU4LCAxNzQ4LCA2NDgxNzI3Li4uXG4kIHRvdGFsX3NwZW5kaW5nICAgICAgICAgICAgICAgICAgPGRibD4gNS43NjY2NzNlKzA0LCAxLjE3NjAwM2UrMDYsIDQuMjgwNzk3ZSswNywgMi42NDQ3Li4uXG4kIHVzZXJfY291bnQgICAgICAgICAgICAgICAgICAgICAgPGludD4gODkzLCA3ODQ1LCA3ODgwNDQsIDM3ODYsIDQxMjEsIDI1OSwgODY0MTIyLCAxNjAxLi4uXG4kIHRvdGFsX3NwZW5kaW5nX3Blcl91c2VyICAgICAgICAgPGRibD4gNjQuNTc2NDEsIDE0OS45MDQ4MSwgNTQuMzIxODAsIDY5OC41NjQ0NywgMzI2MC42Li4uXG4kIHVuaXRfY291bnQgICAgICAgICAgICAgICAgICAgICAgPGRibD4gMjkzMTYwLjAsIDExMDI0MjMuMCwgMTk4OTY3MTIyLjIsIDI1NTUxMi4wLCAxNTcyLi4uXG4kIHVuaXRfY29zdF93YXZnICAgICAgICAgICAgICAgICAgPGRibD4gMC4xOTY3NjYwLCAxLjA2Njc0NDEsIDAuMjA4OTAwMywgMTAuMzUxNjY2OSwgOC45Li4uXG4kIHVzZXJfY291bnRfbm9uX2xvd2luY29tZSAgICAgICAgPGludD4gNDIyLCA1Nzg3LCAzNTY4NDEsIDE0MzcsIDI0MTgsIDExNSwgMjk1MDYwLCA4MTcyLi4uXG4kIG91dF9vZl9wb2NrZXRfYXZnX25vbl9sb3dpbmNvbWUgPGRibD4gNDIuMzQ3MjAsIDEyMC43Mjg5MSwgMjQuNzM4MjksIDEyNy4zODI4NSwgNDc1LjE2Li4uXG4kIHVzZXJfY291bnRfbG93aW5jb21lICAgICAgICAgICAgPGludD4gNDcxLCAyMDU4LCA0MzEyMDMsIDIzNDksIDE3MDMsIDE0NCwgNTY5MDYyLCA3ODM4Li4uXG4kIG91dF9vZl9wb2NrZXRfYXZnX2xvd2luY29tZSAgICAgPGRibD4gNy41NDU4NjAsIDExLjA2NDEyNSwgNC41NDA5MzQsIDExLjMzMzU4NSwgMjYuNzg0Li4uXG4kIHllYXIgICAgICAgICAgICAgICAgICAgICAgICAgICAgPGludD4gMjAxMSwgMjAxMSwgMjAxMSwgMjAxMSwgMjAxMywgMjAxMywgMjAxMywgMjAxMywgLi4uXG4ifQ== -->
 <pre><code>Observations: 2,432
 Variables: 13
-$ drugname_brand                  &lt;chr&gt; &quot;1ST TIER UNIFINE PENTIPS&quot;, &quot;DYAZIDE&quot;, &quot;FAMOTIDINE...
-$ drugname_generic                &lt;chr&gt; &quot;PEN NEEDLE, DIABETIC&quot;, &quot;TRIAMTERENE/HYDROCHLOROTH...
-$ claim_count                     &lt;int&gt; 2472, 24653, 3513892, 7430, 23758, 1748, 6481727, ...
-$ total_spending                  &lt;dbl&gt; 5.766673e+04, 1.176003e+06, 4.280797e+07, 2.644765...
-$ user_count                      &lt;int&gt; 893, 7845, 788044, 3786, 4121, 259, 864122, 160108...
-$ total_spending_per_user         &lt;dbl&gt; 64.57641, 149.90481, 54.32180, 698.56447, 3260.603...
-$ unit_count                      &lt;dbl&gt; 293160.0, 1102423.0, 198967122.2, 255512.0, 157265...
-$ unit_cost_wavg                  &lt;dbl&gt; 0.1967660, 1.0667441, 0.2089003, 10.3516669, 8.939...
-$ user_count_non_lowincome        &lt;int&gt; 422, 5787, 356841, 1437, 2418, 115, 295060, 817256...
-$ out_of_pocket_avg_non_lowincome &lt;dbl&gt; 42.34720, 120.72891, 24.73829, 127.38285, 475.1690...
-$ user_count_lowincome            &lt;int&gt; 471, 2058, 431203, 2349, 1703, 144, 569062, 783829...
-$ out_of_pocket_avg_lowincome     &lt;dbl&gt; 7.545860, 11.064125, 4.540934, 11.333585, 26.78475...
-$ year                            &lt;int&gt; 2011, 2011, 2011, 2011, 2013, 2013, 2013, 2013, 20...</code></pre>
+$ drugname_brand                  &lt;chr&gt; &quot;1ST TIER UNIFINE PENTIPS&quot;, &quot;DYAZIDE&quot;, &quot;FAMOTIDI...
+$ drugname_generic                &lt;chr&gt; &quot;PEN NEEDLE, DIABETIC&quot;, &quot;TRIAMTERENE/HYDROCHLORO...
+$ claim_count                     &lt;int&gt; 2472, 24653, 3513892, 7430, 23758, 1748, 6481727...
+$ total_spending                  &lt;dbl&gt; 5.766673e+04, 1.176003e+06, 4.280797e+07, 2.6447...
+$ user_count                      &lt;int&gt; 893, 7845, 788044, 3786, 4121, 259, 864122, 1601...
+$ total_spending_per_user         &lt;dbl&gt; 64.57641, 149.90481, 54.32180, 698.56447, 3260.6...
+$ unit_count                      &lt;dbl&gt; 293160.0, 1102423.0, 198967122.2, 255512.0, 1572...
+$ unit_cost_wavg                  &lt;dbl&gt; 0.1967660, 1.0667441, 0.2089003, 10.3516669, 8.9...
+$ user_count_non_lowincome        &lt;int&gt; 422, 5787, 356841, 1437, 2418, 115, 295060, 8172...
+$ out_of_pocket_avg_non_lowincome &lt;dbl&gt; 42.34720, 120.72891, 24.73829, 127.38285, 475.16...
+$ user_count_lowincome            &lt;int&gt; 471, 2058, 431203, 2349, 1703, 144, 569062, 7838...
+$ out_of_pocket_avg_lowincome     &lt;dbl&gt; 7.545860, 11.064125, 4.540934, 11.333585, 26.784...
+$ year                            &lt;int&gt; 2011, 2011, 2011, 2011, 2013, 2013, 2013, 2013, ...</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -273,8 +286,9 @@ $ year                            &lt;int&gt; 2011, 2011, 2011, 2011, 2013, 2013
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<div id="which-generics-had-largest-total-spending-for-an-inidivdual-year" class="section level3">
-<h3>Which generics had largest total spending (for an inidivdual year) ?</h3>
+</div>
+<div id="which-generics-had-largest-total-spending-for-an-inidivdual-year" class="section level2">
+<h2>Which generics had largest total spending (for an inidivdual year) ?</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3BlbmRfZGYgJT4lIFxuICAgICAgICBhcnJhbmdlKGRlc2ModG90YWxfc3BlbmRpbmcpKSAlPiUgICAgICAgICAgIFxuICAgICAgICBzZWxlY3QoZHJ1Z25hbWVfYnJhbmQsZHJ1Z25hbWVfZ2VuZXJpYyx0b3RhbF9zcGVuZGluZyx5ZWFyKSAlPiUgXG4gICAgICAgIGhlYWQoMjApXG5gYGAifQ== -->
@@ -293,8 +307,8 @@ $ year                            &lt;int&gt; 2011, 2011, 2011, 2011, 2013, 2013
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-<div id="which-generics-had-largest-total-spending-over-all-5-years" class="section level3">
-<h3>Which generics had largest total spending over all 5 years?</h3>
+<div id="which-generics-had-largest-total-spending-over-all-5-years" class="section level2">
+<h2>Which generics had largest total spending over all 5 years?</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3BlbmRfZGYgJT4lIFxuICAgICAgICBncm91cF9ieShkcnVnbmFtZV9nZW5lcmljKSAlPiVcbiAgICAgICAgc3VtbWFyaXNlKHRvdCA9IHN1bSh0b3RhbF9zcGVuZGluZykpICU+JVxuICAgICAgICBhcnJhbmdlKCBkZXNjKHRvdCkpICU+JVxuICAgICAgICBoZWFkKDIwKVxuYGBgIn0= -->
@@ -317,8 +331,8 @@ $ year                            &lt;int&gt; 2011, 2011, 2011, 2011, 2013, 2013
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-<div id="try-plotting-total-spending-by-year" class="section level3">
-<h3>Try plotting total spending by year</h3>
+<div id="try-plotting-total-spending-by-year" class="section level2">
+<h2>Try plotting total spending by year</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3BlbmRfZGYgJT4lXG4gICAgICAgIGdyb3VwX2J5KHllYXIpICU+JVxuICAgICAgICBzdW1tYXJpc2UodG90PXN1bSh0b3RhbF9zcGVuZGluZykpICU+JVxuICAgICAgICBnZ3Bsb3QoYWVzKHllYXIsdG90KSkgK1xuICAgICAgICBnZW9tX2JhcihzdGF0PSdpZGVudGl0eScsYWVzKGZpbGw9YXMuZmFjdG9yKHllYXIpKSkgK1xuICAgICAgICB5bGFiKFwiVG90YWwgU3BlbmRpbmdcIikgK1xuICAgICAgICBnZ3RpdGxlKFwiVG90YWwgWWVhciBTcGVuZGluZyBvbiB0b3AgMTAwIGdlbmVyaWNzXCIpXG5gYGAifQ== -->
@@ -336,8 +350,8 @@ $ year                            &lt;int&gt; 2011, 2011, 2011, 2011, 2013, 2013
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-<div id="which-generic-had-largest-difference-in-spending-from-2011-2015" class="section level3">
-<h3>Which generic had largest difference in spending from 2011-2015 ?</h3>
+<div id="which-generic-had-largest-difference-in-spending-from-2011-2015" class="section level2">
+<h2>Which generic had largest difference in spending from 2011-2015 ?</h2>
 <ul>
 <li>First group by generic and get yearly totals</li>
 </ul>
@@ -379,22 +393,11 @@ head(df_yearly)</code></pre>
 <!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-</div>
-<div id="section" class="section level3">
-<h3></h3>
-</div>
-</div>
-<div id="to-do" class="section level2">
-<h2>TO-DO</h2>
-<ul>
-<li>Fit linear regression vs year to each generic, see which ones are rising the most.</li>
-<li>Look at price per user, not just total price.</li>
-<li>Look at number of users, number of low-income users, etc.</li>
-</ul>
 <!-- rnb-text-end -->
 </div>
+</div>
 
-<div id="rmd-source-code">Ci0tLQp0aXRsZTogIkV4cGxvcmF0aW9uIG9mIGRydWctc3BlbmRpbmcgLSBBbmR5IFBpY2tlcmluZyIKb3V0cHV0OiAKICBodG1sX2RvY3VtZW50OiAKICAgIGtlZXBfbWQ6IHllcwogICAgdG9jOiB5ZXMKICBodG1sX25vdGVib29rOiAKICAgIHRvYzogeWVzCi0tLQoKCiMjIEludHJvZHVjdGlvbgoKTW9kaWZpZWQgZnJvbSB0aGUgYXV0b21hdGljYWxseSBnZW5lcmF0ZWQgbm90ZWJvb2sgZm9yIHRoZSBgZHJ1Zy1zcGVuZGluZ2AgZGF0YXNldCBmb3VuZCBhdDogCmh0dHBzOi8vZGF0YS53b3JsZC9kYXRhNGRlbW9jcmFjeS9kcnVnLXNwZW5kaW5nLCBzaG93Y2FzaW5nIHRoZSB1c2Ugb2YgdGhlIGBkYXRhLndvcmxkYCBSIHBhY2thZ2UuICogTGVhcm4gbW9yZSBhdCBodHRwczovL2dpdGh1Yi5jb20vZGF0YWRvdHdvcmxkL2RhdGEud29ybGQtcgoKCiMjIyBMb2FkIHBhY2thZ2VzCmBgYHtyfQpsaWJyYXJ5KGRhdGEud29ybGQpCnN1cHByZXNzUGFja2FnZVN0YXJ0dXBNZXNzYWdlcyhsaWJyYXJ5KGRwbHlyKSkKc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkoZ2dwbG90MikpCmxpYnJhcnkodGliYmxlKQpgYGAKCgojIyMgTGlzdCBhbGwgdGFibGVzIGluIHRoZSAqKmRydWctc3BlbmRpbmcqKiBkYXRhc2V0OgpgYGB7ciBsaXN0IHRhYmxlc30KIyBEYXRhc2V0cyBhcmUgcmVmZXJlbmNlZCBieSB0aGVpciBVUkwgb3IgcGF0aApkYXRhc2V0X2tleSA8LSAiaHR0cHM6Ly9kYXRhLndvcmxkL2RhdGE0ZGVtb2NyYWN5L2RydWctc3BlbmRpbmciCiMgTGlzdCB0YWJsZXMgYXZhaWxhYmxlIGZvciBTUUwgcXVlcmllcwp0YWJsZXNfcXJ5IDwtIGRhdGEud29ybGQ6OnFyeV9zcWwoIlNFTEVDVCAqIEZST00gVGFibGVzIikKdGFibGVzX2RmIDwtIGRhdGEud29ybGQ6OnF1ZXJ5KHRhYmxlc19xcnksIGRhdGFzZXQgPSBkYXRhc2V0X2tleSkKIyBTZWUgd2hhdCBpcyBpbiBpdAp0YWJsZXNfZGYkdGFibGVOYW1lCmBgYAoKCgojIyBIZXJlIEkgd2lsbCBvbmx5IGxvb2sgYXQgdGhlICdzcGVuZGluZ19hbGxfdG9wMTAwLmNzdicgZGF0YQpgYGB7cn0KICBzcGVuZF9xcnkgPC0gZGF0YS53b3JsZDo6cXJ5X3NxbChzcHJpbnRmKCJTRUxFQ1QgKiBGUk9NIHNwZW5kaW5nX2FsbF90b3AxMDAiKSkKICBzcGVuZF9kZiAgPC0gZGF0YS53b3JsZDo6cXVlcnkoc3BlbmRfcXJ5LCBkYXRhc2V0ID0gZGF0YXNldF9rZXkpCiAgZ2xpbXBzZShzcGVuZF9kZikKYGBgCgoKIyMgKk5vdGUqIEkgb3JpZ2luYWxseSBhc3N1bWVkIHRoYXQgdGhlIGFtb3VudHMgaW4gdGhpcyBmaWxlIGhhZCBiZWVuIHN1bW1lZCBvdmVyIHRoZSB5ZWFycy4gQWN0dWFsbHkgZnJvbSB0aGUgZGVzY3JpcHRpb24gdy8gdGhlIGZpbGUgb24gZGF0YS53b3JsZCAod2hpY2ggSSBzaG91bGQgaGF2ZSByZWFkIG1vcmUgY2xvc2VseSksICBpdCBpcyB0aGUgJzIwMTEtMjAxNSBzcGVuZGluZyBkYXRhIGNvbWJpbmVkLCBmb3IgdGhlIHRvcCAxMDAgZ2VuZXJpY3MgYnkgdG90YWwgbnVtYmVyIG9mIHVzZXJzIGluIHRoYXQgdGltZSBmcmFtZS4nICBUaGVyZSBpcyBhIHN0aWxsIGEgcm93IGZvciBlYWNoIHllYXIgKHRoZSB5ZWFycyBoYXZlIG5vdCBiZWVuIHN1bW1lZCB0b2dldGhlcikuCgpXZSBjYW4gY29uZmlybSB0aGF0IHRoZXJlIGFyZSAxMDAgdW5pcXVlIGdlbmVyaWMgbmFtZXMgaW4gdGhpcyBkYXRhc2V0OgpgYGB7cn0KcHJpbnQoIHBhc3RlKCdPdXQgb2YgJyxucm93KHNwZW5kX2RmKSwnIHJvd3MsIHRoZXJlIGFyZSAnLGxlbmd0aCh1bmlxdWUoc3BlbmRfZGYkZHJ1Z25hbWVfZ2VuZXJpYykpLCcgdW5pcXVlIGdlbmVyaWMgbmFtZXMgJykpCmBgYAoKCgojIyMgV2hpY2ggZ2VuZXJpY3MgaGFkIGxhcmdlc3QgdG90YWwgc3BlbmRpbmcgKGZvciBhbiBpbmlkaXZkdWFsIHllYXIpID8gCgpgYGB7cn0Kc3BlbmRfZGYgJT4lIAogICAgICAgIGFycmFuZ2UoZGVzYyh0b3RhbF9zcGVuZGluZykpICU+JSAgICAgICAgICAgCiAgICAgICAgc2VsZWN0KGRydWduYW1lX2JyYW5kLGRydWduYW1lX2dlbmVyaWMsdG90YWxfc3BlbmRpbmcseWVhcikgJT4lIAogICAgICAgIGhlYWQoMjApCmBgYAoKIyMjIFdoaWNoIGdlbmVyaWNzIGhhZCBsYXJnZXN0IHRvdGFsIHNwZW5kaW5nIG92ZXIgYWxsIDUgeWVhcnM/CmBgYHtyfQpzcGVuZF9kZiAlPiUgCiAgICAgICAgZ3JvdXBfYnkoZHJ1Z25hbWVfZ2VuZXJpYykgJT4lCiAgICAgICAgc3VtbWFyaXNlKHRvdCA9IHN1bSh0b3RhbF9zcGVuZGluZykpICU+JQogICAgICAgIGFycmFuZ2UoIGRlc2ModG90KSkgJT4lCiAgICAgICAgaGVhZCgyMCkKICAgICAgICAKYGBgCgoKCiMjIyBUcnkgcGxvdHRpbmcgdG90YWwgc3BlbmRpbmcgYnkgeWVhcgpgYGB7cn0Kc3BlbmRfZGYgJT4lCiAgICAgICAgZ3JvdXBfYnkoeWVhcikgJT4lCiAgICAgICAgc3VtbWFyaXNlKHRvdD1zdW0odG90YWxfc3BlbmRpbmcpKSAlPiUKICAgICAgICBnZ3Bsb3QoYWVzKHllYXIsdG90KSkgKwogICAgICAgIGdlb21fYmFyKHN0YXQ9J2lkZW50aXR5JyxhZXMoZmlsbD1hcy5mYWN0b3IoeWVhcikpKSArCiAgICAgICAgeWxhYigiVG90YWwgU3BlbmRpbmciKSArCiAgICAgICAgZ2d0aXRsZSgiVG90YWwgWWVhciBTcGVuZGluZyBvbiB0b3AgMTAwIGdlbmVyaWNzIikKYGBgCgoKCiMjIyBXaGljaCBnZW5lcmljIGhhZCBsYXJnZXN0IGRpZmZlcmVuY2UgaW4gc3BlbmRpbmcgZnJvbSAyMDExLTIwMTUgPwotIEZpcnN0IGdyb3VwIGJ5IGdlbmVyaWMgYW5kIGdldCB5ZWFybHkgdG90YWxzCmBgYHtyfQpkZl95ZWFybHkgPC0gc3BlbmRfZGYgJT4lCiAgICAgICAgZ3JvdXBfYnkoZHJ1Z25hbWVfZ2VuZXJpYyx5ZWFyKSAlPiUKICAgICAgICBzdW1tYXJpemUodG90ID0gc3VtKHRvdGFsX3NwZW5kaW5nKSkgJT4lCiAgICAgICAgYXJyYW5nZShkcnVnbmFtZV9nZW5lcmljLHllYXIpIApoZWFkKGRmX3llYXJseSkKYGBgCgotIFRoZW4gY29tcHV0ZSBsYXJnZXN0IGRpZmYgYmV0d2VlbiBsYXJnZXN0IGFuZCBzbWFsbGVzdCBwcmljZS4KYGBge3J9CmRmX3llYXJseSAlPiUgCiAgICAgICAgZ3JvdXBfYnkoZHJ1Z25hbWVfZ2VuZXJpYykgJT4lCiAgICAgICAgc3VtbWFyaXNlKGRpZmYgPSBtYXgodG90KS1taW4odG90KSkgJT4lCiAgICAgICAgYXJyYW5nZSggZGVzYyhkaWZmKSkKYGBgCgoKIyMjCgoKIyMgVE8tRE8KLSBGaXQgbGluZWFyIHJlZ3Jlc3Npb24gdnMgeWVhciB0byBlYWNoIGdlbmVyaWMsIHNlZSB3aGljaCBvbmVzIGFyZSByaXNpbmcgdGhlIG1vc3QuCi0gTG9vayBhdCBwcmljZSBwZXIgdXNlciwgbm90IGp1c3QgdG90YWwgcHJpY2UuCi0gTG9vayBhdCBudW1iZXIgb2YgdXNlcnMsIG51bWJlciBvZiBsb3ctaW5jb21lIHVzZXJzLCBldGMuCgo=</div>
+<div id="rmd-source-code">Ci0tLQp0aXRsZTogIkV4cGxvcmF0aW9uIG9mIGRydWctc3BlbmRpbmcgLSBBbmR5IFBpY2tlcmluZyIKb3V0cHV0OiAKICBodG1sX2RvY3VtZW50OiAKICAgIGtlZXBfbWQ6IHllcwogICAgdG9jOiB5ZXMKICBodG1sX25vdGVib29rOiAKICAgIHRvYzogeWVzCi0tLQoKCiMgSW50cm9kdWN0aW9uCi0gVGhpcyBub3RlYm9vayBjb250YWlucyBzb21lIGV4cGxyb2F0b3J5IGRhdGEgYW5hbHlzaXMgb2YgdGhlICpzcGVuZGluZ19hbGxfdG9wMTAwLmNzdiogZGF0YQotIFBhcnQgb2YgdGhlIGQ0ZCAqZHJ1Z19zcGVuZGluZyogcHJvamVjdDogPGh0dHBzOi8vZ2l0aHViLmNvbS9EYXRhNERlbW9jcmFjeS9kcnVnLXNwZW5kaW5nPgotIE5vdGVib29rIG1vZGlmaWVkIGZyb20gdGhlIGF1dG9tYXRpY2FsbHkgZ2VuZXJhdGVkIG5vdGVib29rIGZvciB0aGUgYGRydWctc3BlbmRpbmdgIGRhdGFzZXQgZm91bmQgYXQ6IGh0dHBzOi8vZGF0YS53b3JsZC9kYXRhNGRlbW9jcmFjeS9kcnVnLXNwZW5kaW5nLCBzaG93Y2FzaW5nIHRoZSB1c2Ugb2YgdGhlIGBkYXRhLndvcmxkYCBSIHBhY2thZ2UuICogTGVhcm4gbW9yZSBhdCBodHRwczovL2dpdGh1Yi5jb20vZGF0YWRvdHdvcmxkL2RhdGEud29ybGQtcgoKIyBUTy1ETwotIEZpdCBsaW5lYXIgcmVncmVzc2lvbiB2cyB5ZWFyIHRvIGVhY2ggZ2VuZXJpYywgc2VlIHdoaWNoIG9uZXMgYXJlIHJpc2luZyB0aGUgbW9zdC4KLSBMb29rIGF0IHByaWNlIHBlciB1c2VyLCBub3QganVzdCB0b3RhbCBwcmljZS4KLSBMb29rIGF0IG51bWJlciBvZiB1c2VycywgbnVtYmVyIG9mIGxvdy1pbmNvbWUgdXNlcnMsIGV0Yy4KCgojIyBMb2FkIHBhY2thZ2VzCmBgYHtyfQpsaWJyYXJ5KGRhdGEud29ybGQpCnN1cHByZXNzUGFja2FnZVN0YXJ0dXBNZXNzYWdlcyhsaWJyYXJ5KGRwbHlyKSkKc3VwcHJlc3NQYWNrYWdlU3RhcnR1cE1lc3NhZ2VzKGxpYnJhcnkoZ2dwbG90MikpCmxpYnJhcnkodGliYmxlKQpgYGAKCgojIyBMaXN0IGFsbCB0YWJsZXMgaW4gdGhlICoqZHJ1Zy1zcGVuZGluZyoqIGRhdGFzZXQ6CmBgYHtyIGxpc3QgdGFibGVzfQojIERhdGFzZXRzIGFyZSByZWZlcmVuY2VkIGJ5IHRoZWlyIFVSTCBvciBwYXRoCmRhdGFzZXRfa2V5IDwtICJodHRwczovL2RhdGEud29ybGQvZGF0YTRkZW1vY3JhY3kvZHJ1Zy1zcGVuZGluZyIKIyBMaXN0IHRhYmxlcyBhdmFpbGFibGUgZm9yIFNRTCBxdWVyaWVzCnRhYmxlc19xcnkgPC0gZGF0YS53b3JsZDo6cXJ5X3NxbCgiU0VMRUNUICogRlJPTSBUYWJsZXMiKQp0YWJsZXNfZGYgPC0gZGF0YS53b3JsZDo6cXVlcnkodGFibGVzX3FyeSwgZGF0YXNldCA9IGRhdGFzZXRfa2V5KQojIFNlZSB3aGF0IGlzIGluIGl0CnRhYmxlc19kZiR0YWJsZU5hbWUKYGBgCgoKCiMjIEhlcmUgSSB3aWxsIG9ubHkgbG9vayBhdCB0aGUgJ3NwZW5kaW5nX2FsbF90b3AxMDAuY3N2JyBkYXRhCmBgYHtyfQogIHNwZW5kX3FyeSA8LSBkYXRhLndvcmxkOjpxcnlfc3FsKHNwcmludGYoIlNFTEVDVCAqIEZST00gc3BlbmRpbmdfYWxsX3RvcDEwMCIpKQogIHNwZW5kX2RmICA8LSBkYXRhLndvcmxkOjpxdWVyeShzcGVuZF9xcnksIGRhdGFzZXQgPSBkYXRhc2V0X2tleSkKICBnbGltcHNlKHNwZW5kX2RmKQpgYGAKCgojIyAqTm90ZSogSSBvcmlnaW5hbGx5IGFzc3VtZWQgdGhhdCB0aGUgYW1vdW50cyBpbiB0aGlzIGZpbGUgaGFkIGJlZW4gc3VtbWVkIG92ZXIgdGhlIHllYXJzLiBBY3R1YWxseSBmcm9tIHRoZSBkZXNjcmlwdGlvbiB3LyB0aGUgZmlsZSBvbiBkYXRhLndvcmxkICh3aGljaCBJIHNob3VsZCBoYXZlIHJlYWQgbW9yZSBjbG9zZWx5KSwgIGl0IGlzIHRoZSAnMjAxMS0yMDE1IHNwZW5kaW5nIGRhdGEgY29tYmluZWQsIGZvciB0aGUgdG9wIDEwMCBnZW5lcmljcyBieSB0b3RhbCBudW1iZXIgb2YgdXNlcnMgaW4gdGhhdCB0aW1lIGZyYW1lLicgIFRoZXJlIGlzIGEgc3RpbGwgYSByb3cgZm9yIGVhY2ggeWVhciAodGhlIHllYXJzIGhhdmUgbm90IGJlZW4gc3VtbWVkIHRvZ2V0aGVyKS4KCldlIGNhbiBjb25maXJtIHRoYXQgdGhlcmUgYXJlIDEwMCB1bmlxdWUgZ2VuZXJpYyBuYW1lcyBpbiB0aGlzIGRhdGFzZXQ6CmBgYHtyfQpwcmludCggcGFzdGUoJ091dCBvZiAnLG5yb3coc3BlbmRfZGYpLCcgcm93cywgdGhlcmUgYXJlICcsbGVuZ3RoKHVuaXF1ZShzcGVuZF9kZiRkcnVnbmFtZV9nZW5lcmljKSksJyB1bmlxdWUgZ2VuZXJpYyBuYW1lcyAnKSkKYGBgCgoKCiMjIFdoaWNoIGdlbmVyaWNzIGhhZCBsYXJnZXN0IHRvdGFsIHNwZW5kaW5nIChmb3IgYW4gaW5pZGl2ZHVhbCB5ZWFyKSA/IAoKYGBge3J9CnNwZW5kX2RmICU+JSAKICAgICAgICBhcnJhbmdlKGRlc2ModG90YWxfc3BlbmRpbmcpKSAlPiUgICAgICAgICAgIAogICAgICAgIHNlbGVjdChkcnVnbmFtZV9icmFuZCxkcnVnbmFtZV9nZW5lcmljLHRvdGFsX3NwZW5kaW5nLHllYXIpICU+JSAKICAgICAgICBoZWFkKDIwKQpgYGAKCiMjIFdoaWNoIGdlbmVyaWNzIGhhZCBsYXJnZXN0IHRvdGFsIHNwZW5kaW5nIG92ZXIgYWxsIDUgeWVhcnM/CmBgYHtyfQpzcGVuZF9kZiAlPiUgCiAgICAgICAgZ3JvdXBfYnkoZHJ1Z25hbWVfZ2VuZXJpYykgJT4lCiAgICAgICAgc3VtbWFyaXNlKHRvdCA9IHN1bSh0b3RhbF9zcGVuZGluZykpICU+JQogICAgICAgIGFycmFuZ2UoIGRlc2ModG90KSkgJT4lCiAgICAgICAgaGVhZCgyMCkKICAgICAgICAKYGBgCgoKCiMjIFRyeSBwbG90dGluZyB0b3RhbCBzcGVuZGluZyBieSB5ZWFyCmBgYHtyfQpzcGVuZF9kZiAlPiUKICAgICAgICBncm91cF9ieSh5ZWFyKSAlPiUKICAgICAgICBzdW1tYXJpc2UodG90PXN1bSh0b3RhbF9zcGVuZGluZykpICU+JQogICAgICAgIGdncGxvdChhZXMoeWVhcix0b3QpKSArCiAgICAgICAgZ2VvbV9iYXIoc3RhdD0naWRlbnRpdHknLGFlcyhmaWxsPWFzLmZhY3Rvcih5ZWFyKSkpICsKICAgICAgICB5bGFiKCJUb3RhbCBTcGVuZGluZyIpICsKICAgICAgICBnZ3RpdGxlKCJUb3RhbCBZZWFyIFNwZW5kaW5nIG9uIHRvcCAxMDAgZ2VuZXJpY3MiKQpgYGAKCgoKIyMgV2hpY2ggZ2VuZXJpYyBoYWQgbGFyZ2VzdCBkaWZmZXJlbmNlIGluIHNwZW5kaW5nIGZyb20gMjAxMS0yMDE1ID8KLSBGaXJzdCBncm91cCBieSBnZW5lcmljIGFuZCBnZXQgeWVhcmx5IHRvdGFscwpgYGB7cn0KZGZfeWVhcmx5IDwtIHNwZW5kX2RmICU+JQogICAgICAgIGdyb3VwX2J5KGRydWduYW1lX2dlbmVyaWMseWVhcikgJT4lCiAgICAgICAgc3VtbWFyaXplKHRvdCA9IHN1bSh0b3RhbF9zcGVuZGluZykpICU+JQogICAgICAgIGFycmFuZ2UoZHJ1Z25hbWVfZ2VuZXJpYyx5ZWFyKSAKaGVhZChkZl95ZWFybHkpCmBgYAoKLSBUaGVuIGNvbXB1dGUgbGFyZ2VzdCBkaWZmIGJldHdlZW4gbGFyZ2VzdCBhbmQgc21hbGxlc3QgcHJpY2UuCmBgYHtyfQpkZl95ZWFybHkgJT4lIAogICAgICAgIGdyb3VwX2J5KGRydWduYW1lX2dlbmVyaWMpICU+JQogICAgICAgIHN1bW1hcmlzZShkaWZmID0gbWF4KHRvdCktbWluKHRvdCkpICU+JQogICAgICAgIGFycmFuZ2UoIGRlc2MoZGlmZikpCmBgYAoKCgoK</div>
 
 
 
