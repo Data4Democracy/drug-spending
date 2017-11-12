@@ -1,0 +1,117 @@
+
+---
+title: "Exploration of drug-spending - Andy Pickering"
+output: 
+  html_document: 
+    keep_md: yes
+    toc: yes
+  html_notebook: 
+    toc: yes
+---
+
+
+# Introduction
+- This notebook contains some explroatory data analysis of the *spending_all_top100.csv* data
+- Part of the d4d *drug_spending* project: <https://github.com/Data4Democracy/drug-spending>
+- Notebook modified from the automatically generated notebook for the `drug-spending` dataset found at: https://data.world/data4democracy/drug-spending, showcasing the use of the `data.world` R package. * Learn more at https://github.com/datadotworld/data.world-r
+
+# TO-DO
+- Fit linear regression vs year to each generic, see which ones are rising the most.
+- Look at price per user, not just total price.
+- Look at number of users, number of low-income users, etc.
+
+
+## Load packages
+```{r}
+library(data.world)
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(ggplot2))
+library(tibble)
+```
+
+
+## List all tables in the **drug-spending** dataset:
+```{r list tables}
+# Datasets are referenced by their URL or path
+dataset_key <- "https://data.world/data4democracy/drug-spending"
+# List tables available for SQL queries
+tables_qry <- data.world::qry_sql("SELECT * FROM Tables")
+tables_df <- data.world::query(tables_qry, dataset = dataset_key)
+# See what is in it
+tables_df$tableName
+```
+
+
+
+## Here I will only look at the 'spending_all_top100.csv' data
+```{r}
+  spend_qry <- data.world::qry_sql(sprintf("SELECT * FROM spending_all_top100"))
+  spend_df  <- data.world::query(spend_qry, dataset = dataset_key)
+  glimpse(spend_df)
+```
+
+
+## *Note* I originally assumed that the amounts in this file had been summed over the years. Actually from the description w/ the file on data.world (which I should have read more closely),  it is the '2011-2015 spending data combined, for the top 100 generics by total number of users in that time frame.'  There is a still a row for each year (the years have not been summed together).
+
+We can confirm that there are 100 unique generic names in this dataset:
+```{r}
+print( paste('Out of ',nrow(spend_df),' rows, there are ',length(unique(spend_df$drugname_generic)),' unique generic names '))
+```
+
+
+
+## Which generics had largest total spending (for an inidivdual year) ? 
+
+```{r}
+spend_df %>% 
+        arrange(desc(total_spending)) %>%           
+        select(drugname_brand,drugname_generic,total_spending,year) %>% 
+        head(20)
+```
+
+## Which generics had largest total spending over all 5 years?
+```{r}
+spend_df %>% 
+        group_by(drugname_generic) %>%
+        summarise(tot = sum(total_spending)) %>%
+        arrange( desc(tot)) %>%
+        head(20)
+        
+```
+
+
+
+## Try plotting total spending by year
+```{r}
+spend_df %>%
+        group_by(year) %>%
+        summarise(tot=sum(total_spending)) %>%
+        ggplot(aes(year,tot)) +
+        geom_bar(stat='identity',aes(fill=as.factor(year))) +
+        ylab("Total Spending") +
+        ggtitle("Total Year Spending on top 100 generics")
+```
+
+
+
+## Which generic had largest difference in spending from 2011-2015 ?
+- First group by generic and get yearly totals
+```{r}
+df_yearly <- spend_df %>%
+        group_by(drugname_generic,year) %>%
+        summarize(tot = sum(total_spending)) %>%
+        arrange(drugname_generic,year) 
+head(df_yearly)
+```
+
+- Then compute largest diff between largest and smallest price.
+```{r}
+df_yearly %>% 
+        group_by(drugname_generic) %>%
+        summarise(diff = max(tot)-min(tot)) %>%
+        arrange( desc(diff))
+```
+
+
+
+
