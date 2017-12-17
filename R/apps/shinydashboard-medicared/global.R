@@ -1,14 +1,32 @@
 library(tidyverse)
 
 ## -- Read in data sets used for all plots ---------------------------------------------------------
+## install.packages("data.world")
 library(data.world)
-## Set connection; API token is saved in .Renviron
-conn <- data.world(token = Sys.getenv("DW_API"))
+
+## Set connection with data.world - only need to do this once per session
+
+## My data.world API token is stored in my .Renviron file, like this:
+## DW_API=abunchoflettersandnumbers
+## That lets me share my code with no security risk.
+saved_cfg <- data.world::save_config(Sys.getenv("DW_API"))
+data.world::set_config(saved_cfg)
+
+## Name the URL for the dataset we want
+url_drugs <- "https://data.world/data4democracy/drug-spending"
+
+## Query data.world to get all available table names
+tables_drugs <- data.world::query(
+  data.world::qry_sql("SELECT * FROM Tables"), ## qry_sql sends an SQL query
+  dataset = url_drugs ## this is the dataset we want to query
+)
+tables_drugs
 
 ## Read in dataset from data.world
-drug_costs_everything <- data.world::query(connection = conn,
-                                           dataset = 'data4democracy/drug-spending',
-                                           query = "SELECT * FROM `spending_all_top100`")
+drug_costs_everything <- data.world::query(
+  data.world::qry_sql("SELECT * FROM spending_all_top100"),
+  dataset = url_drugs
+)
 
 # ## Alternately: Read in dataset direct from data.world
 # drug_costs_everything <- read.csv("https://query.data.world/s/1y5at2ieqmq2y4txl98psir76",
