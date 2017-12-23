@@ -1,0 +1,101 @@
+---
+title: "atc_file_cleanup"
+author: "Darya Akimova"
+date: "December 23, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Goal: Cleanup the atc-codes dataset that is available on data.world
+
+The data is available at: https://data.world/data4democracy/drug-spending
+It was collected from: http://www.genome.jp/kegg-bin/get_htext?br08303.keg
+
+But it was poorly formatted and not cleaned up when it was downloaded before being uploaded. This is part of the work to address Issue #52 on creating a data dictionary for all existing datasets.
+
+Packages:
+
+```{r packages}
+library(data.world)
+library(tidyverse)
+library(stringr)
+```
+
+I've already setup my R session to use my data.world token using: 
+
+> data.world::set_config(save_config(auth_token = "YOUR API TOKEN"))
+
+Data: 
+
+```{r}
+drug.spend.ds <- "https://data.world/data4democracy/drug-spending"
+atc.codes <- data.world::query(
+  data.world::qry_sql("SELECT * FROM `atc-codes`"),
+  dataset = drug.spend.ds 
+)
+dim(atc.codes)
+glimpse(atc.codes)
+```
+
+The KEGG website has a series of dropdown menus, which is probably why the data has an odd staggered format. The information for the columns in the data.world dictionary is not accurate. 
+
+For reference on what ATC codes are:
+
+https://en.wikipedia.org/wiki/Anatomical_Therapeutic_Chemical_Classification_System
+
+https://www.whocc.no/atc_ddd_index/
+
+In the state that it currently is, the columns are (wikipedia definitions):
+1: First level - main anatomical group
+2: Second level - therapeutic subgroup
+3: Third level - therapeutic/pharmacological subgroup
+4: Fourth level - chemical/therapeutic/pharmacological subgroup
+5: Fifth level - the chemical substance (the column includes the full drug ID and one of the names for it)
+6: A KEGG ID if it is in the KEGG database
+
+Basically, this is an upside-down pyramid way of grouping drugs, starting at the most broad category at the first level and becoming more specific with each tier.
+
+First, fix colnames and switch up the order, also get rid of useless rows:
+```{r col_cleanup}
+colnames(atc.codes) <- c("level1", "level2", "level3", "level4", "level5", "kegg")
+atc.codes.c <- atc.codes %>% 
+  select(level5, kegg, everything()) %>% 
+  filter(!(is.na(level5))) %>% 
+  arrange(level5) %>% 
+  mutate(level1 = str_to_lower(level1))
+glimpse(atc.codes.c)
+```
+
+Both the level5 and the kegg columns may contain IDs that can be useful for connecting drugs to therapeutic uses. Need to think of an appropriate method for storing the data. 
+
+Technically, the level1-level4 columns contain potentially redundant information, but it may be useful for grouping in the future. 
+
+```{r}
+unique(atc.codes.c$level1)
+atc.codes.c <- atc.codes.c %>% 
+  mutate(code = recode(
+    level1,
+    "alimentary tract and metabolism" = "a",
+    "blood and blood forming organs" = "b",
+    "cardiovascular system" = "c",
+    "dermatologicals" = "d",
+    "genito urinary system and sex hormones" = "g",
+    "systemic hormonal preparations, excl. sex hormones and insulins" = "h",
+    "antiinfectives for systemic use" = "j",
+    "antineoplastic and immunomodulating agents" = "l",
+    "musculo-skeletal system" = "m",
+    "nervous system" = "n",
+    "antiparasitic products, insecticides and repellents" = "p",
+    "respiratory system" = "r",
+    "sensory organs" = "s",
+    "various" = "v"
+    )
+  ) %>% 
+  select(level5:kegg, code, everything())
+glimpse(atc.codes.c)
+unique(atc.codes.c$code)
+```
+
