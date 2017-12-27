@@ -1,11 +1,12 @@
 name: shinydashboard-medicared
 title: shinydashboard-medicared
+username:
 account: jenniferthompson
 server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
 appId: 153806
-bundleId: 818670
+bundleId: 1139705
 url: https://jenniferthompson.shinyapps.io/shinydashboard-medicared/
-when: 1494210693.65625
+when: 1513542809.06131
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: .Renviron~|testing-random-overall.feather|testing-random.feather|testing-top100-byuser-overall.feather|testing-top100-byuser.feather
