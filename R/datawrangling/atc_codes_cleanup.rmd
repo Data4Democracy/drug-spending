@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 The data is available at: https://data.world/data4democracy/drug-spending
 It was collected from: http://www.genome.jp/kegg-bin/get_htext?br08303.keg
 
-But it was poorly formatted and not cleaned up when it was downloaded before being uploaded. This is part of the work to address Issue #52 on creating a data dictionary for all existing datasets.
+But it was poorly structured and not user friendly in this format. This is part of the work to address Issue #52 on creating a data dictionary for all existing datasets.
 
 Packages:
 
@@ -27,6 +27,8 @@ library(stringr)
 I've already setup my R session to use my data.world token using: 
 
 > data.world::set_config(save_config(auth_token = "YOUR API TOKEN"))
+
+Running this file for yourself won't work if you haven't setup the data.world package properly with your own API token.
 
 Data: 
 
@@ -56,7 +58,7 @@ In the state that it currently is, the columns are (wikipedia definitions):
 5: Fifth level - the chemical substance (the column includes the full drug ID and one of the names for it)
 6: A KEGG ID if it is in the KEGG database
 
-Basically, this is an upside-down pyramid way of grouping drugs, starting at the most broad category at the first level and becoming more specific with each tier.
+Basically, this is a funnel way of grouping drugs, starting at the most broad category at the first level and becoming more specific with each tier.
 
 First, fix colnames and switch up the order, also get rid of useless rows:
 ```{r col_cleanup}
@@ -72,7 +74,6 @@ glimpse(atc.codes.c)
 Both the level5 and the kegg columns may contain IDs that can be useful for connecting drugs to therapeutic uses. Need to think of an appropriate method for storing the data. 
 
 Technically, the level1-level4 columns contain potentially redundant information, but it may be useful for grouping in the future. 
-
 
 ```{r}
 atc.codes.c <- atc.codes.c %>% 
@@ -139,7 +140,17 @@ mult.level3 <- atc.codes.c %>%
   group_by(level3) %>% 
   summarize(tot = n()) %>% 
   filter(tot > 1)
-test <- atc.codes.c %>% 
-  filter(level3 %in% mult.level3$level3)
+atc.codes.c %>% 
+  filter(level3 %in% mult.level3$level3) %>%
+  select(level1:level3) %>% 
+  unique()
+```
+
+There are some categories that are reused at certain levels, this should explain why there are more codes than there are descriptions.
+
+Will leave the level5 and kegg columns as is for now, will cleanup later when the time comes to match columns because the cleanup process will depend on the matching process.
+
+```{r}
+# write_csv(atc.codes.c, "atc_codes_clean.csv")
 ```
 
