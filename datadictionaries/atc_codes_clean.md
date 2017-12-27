@@ -2,9 +2,12 @@
 
 ## Data files ([available at data.world](https://data.world/data4democracy/drug-spending))
 
+* Raw KEG file: `br08303.keg`
+* Tidied CSV (intermediate): `atc-codes.csv`
 * CSV: `atc_codes_clean.csv`
 
 ## Link(s) to code used for scraping, tidying, etc.:
+
 * original source: http://www.genome.jp/kegg-bin/get_htext?br08303.keg
 * `atc_codes_cleanup.rmd`
 
