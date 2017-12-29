@@ -15,15 +15,15 @@ Data was directly downloaded from [KEGG](http://www.genome.jp/kegg-bin/get_htext
 * **string**: a sequence of characters
 
 ## Field listing
-|Name     |Type    |Description|
-|---------|--------|-----------|
-|usp_category  |string  |USP Category |
-|usp_class  |string |USP Class |
-|usp_drug  |string   |The general drug (e.g. Naproxen, Ibuprofen, etc)|
-|drug_example  | string    | The specific drug (e.g. Naproxen sodium, Ibuprofen arginine salt, etc)|
-|kegg_id_drug  |string |The KEGG identifier for the `usp_drug` (e.g. DG00245)|
-|kegg_id_drug_example | string| The KEGG identifier for the `drug_example` (e.g. D01122)|
-|nomenclature| string | (Unparsed) nomenclature description (e.g. `'(JP17/USP/INN)'`)|
+|Name                 |Type    |Description                                                      |
+|---------------------|--------|-----------------------------------------------------------------|
+|usp_category         |string  |USP Category (broad therapeutic category)                        |
+|usp_class            |string  |USP Class (more specific drug class)                             |
+|usp_drug             |string  |Active drug ingredient / general drug                            |
+|kegg_id_drug         |string  |The KEGG identifier for the `usp_drug` (e.g. DG00245)            |
+|drug_example         |string  |Drug formulation (should be identical if same active ingredient) |
+|kegg_id_drug_example |string  |The KEGG identifier for the `drug_example` (e.g. D01122)         |
+|nomenclature         |string  |(Unparsed) nomenclature description (e.g. `'(JP17/USP/INN)'`)    |
 
 ## Important notes
 
