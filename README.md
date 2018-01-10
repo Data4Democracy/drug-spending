@@ -2,7 +2,9 @@
 
 **Slack:** [#drug-spending](https://datafordemocracy.slack.com/messages/drug-spending/)
 
-[**Project Leads:**](https://github.com/Data4Democracy/read-this-first/blob/master/lead-role-description.md) @mattgawarecki, @jenniferthompson
+[**Project Leads:**](https://github.com/Data4Democracy/read-this-first/blob/master/lead-role-description.md) 
+* Current: @darya.akimova, @chaya.stern
+* Former: @mattgawarecki, @jenniferthompson
 
 **Maintainers (people with commit access)**: @dhuppenkothen, @skirmer
 
