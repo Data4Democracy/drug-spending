@@ -1,0 +1,17 @@
+---
+title: "Analyzing the FDA_NDC_Product Dataset"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Tidying
+Tidying was performed by the script "fda_nda_tidy.R", it takes a long time to run so just import the dataset from the saved CSV
+```{r}
+setwd('home/peter/Desktop/D4D/drug-spending/R/datawrangling/FDA_NDC_tidy')
+tidy.dat <- read.csv('FDA_NDA_product_tidy.R')
+````
+Test
+
