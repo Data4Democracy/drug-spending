@@ -2,17 +2,19 @@
 
 ## Data files ([available at data.world](https://data.world/data4democracy/drug-spending))
 * CSV: `FDA_NDC_Product.csv`
+* CSV (tidy): `fda_ndc_product_tidy.csv` (tidied by @proof-by-accident)
 
 ## Link(s) to code used for scraping, tidying, etc, if applicable:
 
-* `NA`
+* `/drug-spending/R/datawrangling/FDA_NDC_tidy/tidy_fda_ndc.R`
 
 ## Data types
 * **string**: a sequence of characters
 * **integer**: whole numbers
+* **date**: date in the format YYYY-MM-DD
 
 
-## Field listing
+## Field listing (Original)
 |Name                       |Type     |Description|
 |---------------------------|---------|-----------|
 |productid                  |string   |ID unique to the product, starts with the 8 or 9 digit productndc identifier |
@@ -34,6 +36,28 @@
 |pharm_class                |string   |Pharmacological class - information on the drug's mechanism of action and/or drug target. Basically, info on how the drug does what it does |
 |deaschedule                |string   |The Drug Enforcement Administration (DEA) schedule applicable to the drug as reported by the labeler |
 
+
+## Field listing (Tidy)
+|Name                       |Type     |Description|
+|---------------------------|---------|-----------|
+|productid                  |string   |ID unique to the product, starts with the 8 or 9 digit productndc identifier |
+|productndc                 |string   |Unique 8 or 9 digit, 2-segment number in the forms 4-4, 5-3, or 5-4, that is a universal product identifier in the United States. First segment represents the labeler, second segment represents the product. Dosage is embedded in the second NDC code segment and the same drug may have multiple NDC codes if it is available at a number of doses. Missing is the third segment that is needed for a full NDC code, which represents the package code (see link under other resources) |
+|producttypename            |string   |Product type (prescription, over the counter, vaccine, etc) |
+|proprietaryname            |string   |Brand name or trade name of the drug under which it's marketed, chosen by the manufacturer |
+|proprietarynamesuffix      |string   |Add-on to propriety name, may have info about route of administration or dose |
+|dosageformname             |string   |What form the drug is administered in (capsule, tablet, injection, etc) |
+|routename                  |string   |What route the drug is administered by (oral, intravenous, topical, etc) |
+|startmarketingdate         |date     |When the drug was first marketed (YYYY-MM-DD) |
+|endmarketingdate           |date     |The expiration date of the last lot distributed. Actively marketed drugs will not have a marketing end date (YYYY-MM-DD) |
+|marketingcategoryname      |string   |What FDA application type the drug is marketed under (see link under other resources) |
+|applicationnumber          |string   |FDA application number |
+|labelername                |string   |Manufacturer, repackager, or distributor |
+|pharm_class                |string   |Pharmacological class - information on the drug's mechanism of action and/or drug target. Basically, info on how the drug does what it does |
+|deaschedule                |string   |The Drug Enforcement Administration (DEA) schedule applicable to the drug as reported by the labeler |
+|nonproprietaryname         |string   |Active ingredient(s) and/or nonproprietary name(s). Similar, but not always equal to the `substancename` column |
+|substancename              |string   |Active ingredient(s) and/or nonproprietary name(s). Similar, but not always equal to the `nonproprietaryname` column |
+|active_numerator_strength  |decimal  |Amount of active ingredient in the drug |
+|active_ingred_unit         |string   |The units that the amount of active ingredient is measured in |
 
 ## Important notes
 This dataset was created as part of The Drug Listing Act of 1972, which requires drug manufacturers/distributors to provide a full list of currently marketed drugs. The information is submitted by the labeler (manufacturer, repackager, or distributor) to the FDA. It seems that inclusion in the NDC directory does not mean that the drug is FDA approved. The dataset includes information about active ingredients in a drug and their dosing, who produces the drug, and the pharmacological mechanism by which it acts.

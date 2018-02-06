@@ -92,7 +92,7 @@ fixed <- sapply( dat[to.fix,]$nonproprietaryname, function(x) { substring(x,5) }
 dat[ to.fix,]$nonproprietaryname <- fixed
 
 #Save tidy data just in case of a crash or something
-write.csv(tidy.dat, 'fda_ndc_product.csv', row.names = FALSE)
+write.csv(tidy.dat, 'fda_ndc_product_tidy.csv', row.names = FALSE)
 
 #Scrape off that first integer line
 tidy.dat <- tidy.dat[2:dim(tidy.dat)[1], ]
@@ -136,7 +136,7 @@ name.mismatch[sample( 1:dim(name.mismatch)[1], 100 ), untidy.names[1:2]]
 #again just a lot of sloppy entry mistmatch stuff, so we're probably good
 
 #Save tidy data just in case of a crash or something
-write.csv(tidy.dat, 'fda_ndc_product.csv', row.names = FALSE)
+write.csv(tidy.dat, 'fda_ndc_product_tidy.csv', row.names = FALSE)
 
 ###################################################################
 #TRASH

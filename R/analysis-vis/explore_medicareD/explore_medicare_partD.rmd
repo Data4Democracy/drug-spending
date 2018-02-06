@@ -1,0 +1,57 @@
+---
+title: "explore_medicare_partD_data"
+author: "darya akimova"
+date: "January 22, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, error = FALSE)
+```
+
+Packages:
+
+```{r packages}
+library(tidyverse)
+library(data.world)
+library(cowplot)
+```
+
+Data:
+
+(data.world api has already been setup)
+
+```{r data}
+ds.url <- "https://data.world/data4democracy/drug-spending"
+part.d <- data.world::query(
+  data.world::qry_sql("SELECT * FROM spending_part_d_2011to2015_tidy"),
+  dataset = ds.url
+)
+dim(part.d)
+glimpse(part.d)
+part.d <- part.d %>% 
+  arrange(brand_name, generic_name, year)
+```
+
+Basic plots:
+
+```{r}
+part.d %>% 
+  ggplot(aes(x = year, y = claim_count, group = year)) +
+  geom_boxplot()
+# log is better for data
+part.d %>% 
+  ggplot(aes(x = year, y = claim_count, group = year)) +
+  geom_boxplot() +
+  scale_y_log10()
+part.d %>% 
+  ggplot(aes(x = year, y = average_cost_per_unit_weighted, group = year)) +
+  geom_boxplot() +
+  scale_y_log10()
+part.d %>% 
+  ggplot(aes(x = year, y = average_cost_per_unit_weighted, group = brand_name)) +
+  geom_line(alpha = 0.2) +
+  scale_y_log10()
+```
+
+
