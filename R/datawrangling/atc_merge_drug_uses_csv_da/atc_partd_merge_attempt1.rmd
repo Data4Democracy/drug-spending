@@ -1,0 +1,228 @@
+---
+title: "atc_medicare_merge"
+author: "darya akimova"
+date: "February 5, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+The goal of this work is to merge the drug names from the Medicare Part D spending data with the ATC classifications system, based on drug names. Anticipating having to clean both sets of names to get them to merge.
+
+Packages:
+```{r packages}
+library(tidyverse)
+library(cowplot)
+library(data.world)
+```
+
+Data:
+```{r data}
+drug.spend.ds <- "https://data.world/data4democracy/drug-spending"
+# drug names from Medicare Part D data:
+d.drugs <- data.world::query(
+  data.world::qry_sql("SELECT DISTINCT brand_name, generic_name FROM `spending_part_d_2011to2015_tidy`"),
+  dataset = drug.spend.ds
+  ) %>% 
+  mutate_all(str_trim)  # just in case
+glimpse(d.drugs)
+# atc classification system from drug_uses.csv
+atc <- data.world::query(
+  data.world::qry_sql("SELECT * FROM drug_uses"),
+  dataset = drug.spend.ds
+) 
+glimpse(atc)
+```
+
+The ATC datasets needs some cleaning up:
+
+```{r atc_cleanup}
+atc <- atc %>% 
+  select(-column_a) %>% # not useful
+  select(starts_with("drug"), substance, name, everything()) %>% 
+  mutate_all(str_to_lower) %>% 
+  mutate_all(str_trim) %>% 
+  # rename some variables for clarity
+  rename(
+    first_level = anatomical,
+    second_level = therapeutic,
+    third_level = pharmacologic,
+    fourth_level = chemical
+    )
+glimpse(atc)
+# it looks like drugname_generic and substance might be identical columns, is this true?
+all.equal(atc$drugname_generic, atc$substance)  # yes
+# remove the substance column, rename the `name` column appropriately to what it really is - the chemical formulation
+atc <- atc %>%
+  select(-substance) %>% 
+  rename(
+    chem_formula = name
+  )
+glimpse(atc)
+# much better
+glimpse(d.drugs)
+```
+
+Time for some test merges - the low hanging fruit is:
+atc - `drugname_brand` to d.drugs - `brand_name`
+
+```{r}
+brand.semi <- d.drugs %>% 
+  semi_join(atc, by = c("brand_name" = "drugname_brand"))
+dim(brand.semi)
+```
+
+1241 drug matches our of 4498! Not bad at all.
+
+Will take what is left over and keep working on it:
+```{r}
+brand.anti <- d.drugs %>% 
+  anti_join(atc, by = c("brand_name" = "drugname_brand")) %>% 
+  arrange(brand_name)
+glimpse(brand.anti)
+```
+
+Future problems ahead include:
+- instruments vs drugs (needles, the like)
+- multiple drug ingredients in the generic_name column 
+
+On and further
+```{r}
+generic.semi <- brand.anti %>% 
+  semi_join(atc, by = c("generic_name" = "drugname_generic"))
+dim(generic.semi)
+# whump whump
+chem.semi <- brand.anti %>% 
+  semi_join(atc, by = c("generic_name" = "chem_formula"))
+dim(chem.semi)
+chem.anti <- brand.anti %>% 
+  anti_join(atc, by = c("generic_name" = "chem_formula"))
+dim(chem.anti)
+```
+
+That is 84 more than before, I suppose. A little less than what I was hoping for.
+
+Break 1:
+
+```{r}
+matched.so.far <- brand.semi %>% 
+  bind_rows(chem.semi)
+dim(matched.so.far)
+# write_csv(matched.so.far, "medicareD_matched_1325.csv")
+# write_csv(chem.anti, "medicareD_unmatched_3173.csv")
+```
+
+Now have to start altering the Medicare Part D drug names:
+
+```{r}
+chem.anti <- chem.anti %>% 
+  mutate(alt_name = str_replace(generic_name, "hcl", "hydrochloride"))
+hcl.semi <- chem.anti %>% 
+  semi_join(atc, by = c("alt_name" = "chem_formula"))
+hcl.anti <- chem.anti %>% 
+  anti_join(atc, by = c("alt_name" = "chem_formula"))
+dim(hcl.semi)
+dim(hcl.anti)
+matched.so.far <- matched.so.far %>% 
+  bind_rows(hcl.semi %>% select(-alt_name))
+```
+
+A potential issue is drugs with multiple ingredients. It seems that many drugs have multiple active ingredients separted potentially by "/", ",", or "-" in the `generic_name` column. 
+
+```{r mult ingred}
+hcl.anti <- hcl.anti %>% 
+  mutate(mult.forsla = str_count(alt_name, "/"),
+         mult.comm = str_count(alt_name, ","),
+         mult.dash = str_count(alt_name, "-"),
+         mult.all = mult.forsla + mult.comm + mult.dash)
+nrow(hcl.anti %>% 
+       filter(mult.all > 0))
+sum(str_detect(hcl.anti$alt_name, "/")) + sum(str_detect(hcl.anti$alt_name, ",")) + sum(str_detect(hcl.anti$alt_name, "-"))
+# some names use multiple signs, for some drugs this is a sign of multiple ingredients and for others its just naming convention
+```
+
+One "/" notation that stood out for some drug names was "/pf". Upon a little bit of research, it seems that "pf" stands for "pre-filled", as in a pre-filled syringe (such as a vaccine). 
+
+```{r}
+slash.pf <- hcl.anti %>% filter(str_detect(alt_name, "pf"))
+nrow(slash.pf)
+glimpse(slash.pf)
+# note that "Pf", "PF", and "pF" bring up no results
+nrow(slash.pf %>% filter(str_detect(alt_name, "/pf")))
+# all "pf" instances are "/pf" - can remove these and maybe get a few more matches
+sum(str_detect(hcl.anti$alt_name, "/"))
+hcl.anti <- hcl.anti %>% 
+  mutate(alt_name = str_trim(str_replace(alt_name, "/pf", "")),
+         mult.forsla = str_count(alt_name, "/"),
+         mult.comm = str_count(alt_name, ","),
+         mult.dash = str_count(alt_name, "-"),
+         mult.all = mult.forsla + mult.comm + mult.dash)
+sum(str_detect(hcl.anti$alt_name, "/"))
+# some of the drugs still have "/" in the alt_name column
+hcl.anti <- hcl.anti %>%
+  mutate(alt_name = str_replace(alt_name, "hcl", "hydrochloride"))
+# match after pf removal and second "hcl" replacement
+pf.semi <- hcl.anti %>% 
+  semi_join(atc, by = c("alt_name" = "chem_formula")) # %>% 
+  #bind_rows(
+   # hcl.anti %>% 
+    #  semi_join(atc, by = c("alt_name" = "drugname_generic")) # this result is zero
+  #)
+dim(pf.semi)
+matched.so.far <- matched.so.far %>% 
+  bind_rows(pf.semi %>% select(brand_name, generic_name))
+dim(matched.so.far)
+pf.anti <- hcl.anti %>% 
+  anti_join(atc, by = c("alt_name" = "chem_formula"))
+# sanity check:
+nrow(pf.anti) + nrow(matched.so.far)
+```
+
+Okay, now to start tackling some of the multiple-ingredient drugs. The "/" seems to be the easiest to tackle.
+
+```{r fig.height=4, fig.width=4}
+table(pf.anti$mult.forsla)
+pf.anti %>% 
+  ggplot(aes(mult.forsla)) +
+    geom_histogram(binwidth = 0.5) +
+    xlab("number of slashes")
+```
+
+The max number of forward slashes is 7 and 5 or greater is a small enough number of drugs to be looked at:
+
+```{r}
+pf.anti %>% filter(mult.forsla >= 5)
+```
+
+Many of these seem to be multivitamins and other nutrient supplements. Although care should be taken. A drug called Enlyte, for example, looks on the surface to be a multivitamin but it turns out to be a treatment for certain kinds of depression caused by folate deficiency. 
+
+```{r}
+pf.anti.2ingr <- pf.anti %>%
+  filter(mult.forsla == 1) %>% 
+  select(ends_with("name")) %>% 
+  separate(alt_name, c("ingrd_1", "ingrd_2"), sep = "/") %>% 
+  gather("ingrd", "chem_name", 3:4) %>%
+  mutate(chem_name = str_trim(chem_name)) %>%
+  arrange(brand_name)
+pf.2ingr.c.semi <- pf.anti.2ingr %>% 
+  semi_join(atc, by = c("chem_name" = "chem_formula"))
+pf.2ingr.c.anti <- pf.anti.2ingr %>% 
+  anti_join(atc, by = c("chem_name" = "chem_formula"))
+pf.2ingr.g.semi <- pf.2ingr.c.anti %>% 
+  semi_join(atc, by = c("chem_name" = "drugname_generic"))
+pf.2ingr.g.anti <- pf.2ingr.c.anti %>% 
+  anti_join(atc, by = c("chem_name" = "drugname_generic"))
+pf.2ingr.so.far <- pf.2ingr.c.semi %>% 
+  bind_rows(pf.2ingr.g.semi)
+# matched
+dim(pf.2ingr.so.far)
+# to go
+dim(pf.2ingr.g.anti)
+```
+
+Upon further exploration, there seems to be a problem - the `drug_uses.csv` dataset does not seem to contain the full ATC code system. That's a problem.
+
+# Will abandon this attempt to merge the medicare part d data with the `drug_uses.csv` file. Will start over with `atc_codes_clean.csv`.
+
