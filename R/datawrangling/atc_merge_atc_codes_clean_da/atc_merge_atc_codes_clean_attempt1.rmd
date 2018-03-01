@@ -1,0 +1,271 @@
+---
+title: "part_d_atc_codes_clean_csv_merge"
+author: "Darya Akimova"
+date: "February 7, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+Packages:
+```{r packages}
+library(tidyverse)
+library(data.world)
+```
+
+Data:
+```{r data}
+drug.spend.ds <- "https://data.world/data4democracy/drug-spending"
+# drug names from Medicare Part D data:
+d.drugs <- data.world::query(
+  data.world::qry_sql("SELECT DISTINCT brand_name, generic_name FROM `spending_part_d_2011to2015_tidy`"),
+  dataset = drug.spend.ds
+  ) %>% 
+  mutate_all(str_trim)  # just in case
+glimpse(d.drugs)
+# atc classification system from atc_codes_clean.csv
+atc <- data.world::query(
+  data.world::qry_sql("SELECT * FROM atc_codes_clean"),
+  dataset = drug.spend.ds
+) 
+glimpse(atc)
+```
+
+A bit of a mess, and too much information for what is needed right now.
+
+```{r}
+atc.sml <- atc %>%
+  select(level5_code:kegg) %>% 
+  arrange(level5)
+glimpse(atc.sml)
+map_int(map(atc.sml, unique), length)
+```
+
+It's still a bit of a mess from where I stopped in my attempt to clean up this data. Wasn't sure how the names would be used.Also note, some compounds have more than 1 level 5 code - which means that they have multiple uses according to the ATC classification.
+
+Getting rid of the KEGG codes in the names would be a good place to start.
+
+```{r}
+atc.sml <- atc.sml %>% 
+  mutate(lvl5_cln = str_replace(level5, "\\[DG.+\\]", "") %>% str_trim() %>% str_to_lower())
+str_sub(atc.sml$kegg, start = 1, end = 6) <- ""
+glimpse(atc.sml)
+atc.sml <- atc.sml %>% 
+  mutate(kegg_cln = str_replace(kegg, "\\([[:upper:]]{2,}.+\\)", "") %>% str_trim() %>% str_to_lower())
+atc.sml$kegg_cln[is.na(atc.sml$kegg_cln)] <- atc.sml$lvl5_cln[is.na(atc.sml$kegg_cln)]
+atc.cln <- atc.sml %>% 
+  select(level5_code, kegg_cln) %>% 
+  distinct() %>% 
+  arrange(kegg_cln)
+dim(atc.sml)
+dim(atc.cln)
+glimpse(atc.cln)
+rm(atc.sml)  # don't need anymore
+```
+
+Now that that's been cleaned up a bit, let's try some matching:
+
+```{r}
+brand.semi.t1 <- d.drugs %>% 
+  semi_join(atc.cln, by = c("brand_name" = "kegg_cln"))
+dim(brand.semi.t1)
+brand.anti.t1 <- d.drugs %>% 
+  anti_join(atc.cln, by = c("brand_name" = "kegg_cln"))
+dim(brand.anti.t1)
+generic.semi.t1 <- brand.anti.t1 %>% 
+  semi_join(atc.cln, by = c("generic_name" = "kegg_cln"))
+dim(generic.semi.t1)
+generic.anti.t1 <- brand.anti.t1 %>% 
+  anti_join(atc.cln, by = c("generic_name" = "kegg_cln")) %>% 
+  arrange(generic_name)
+dim(generic.anti.t1)
+matched.so.far <- brand.semi.t1 %>% 
+  mutate(key = brand_name) %>% 
+  bind_rows(
+    generic.semi.t1 %>% 
+      mutate(key = generic_name)
+    )
+dim(matched.so.far)
+# break 1
+# write_csv(matched.so.far, "partD_matched_2034_pass1.csv")
+# write_csv(generic.anti.t1, "partD_unmatched_2464_pass1.csv")
+```
+
+This is much better than the first pass with `drug_uses.csv`, where I only got 1325 matches on the first pass. A good sign! 
+
+Now, drugs with multiple ingredients:
+
+```{r}
+generic.anti.t1 <- generic.anti.t1 %>% 
+  mutate(
+    key = generic_name,
+    mult.slash = str_count(key, "/"),
+    mult.comm = str_count(key, ","),
+    mult.dash = str_count(key, "-"),
+    mult.all = mult.slash + mult.comm + mult.dash
+    )
+glimpse(generic.anti.t1)
+nrow(generic.anti.t1 %>% filter(mult.all > 0))
+# from previous attempts at matching: "/pf" probably indicates a prefilled syringe
+slash.pf <- generic.anti.t1 %>% filter(str_detect(key, "pf"))
+nrow(slash.pf)
+glimpse(slash.pf)
+pf.semi <- generic.anti.t1 %>% 
+  mutate(key = str_trim(str_replace(key, "/pf", ""))) %>% 
+  semi_join(atc.cln, by = c("key" = "kegg_cln")) %>% 
+  select(brand_name:key)
+dim(pf.semi)
+matched.so.far <- matched.so.far %>% 
+  bind_rows(pf.semi)
+pf.anti <- generic.anti.t1 %>% 
+  mutate(key = str_trim(str_replace(key, "/pf", ""))) %>% 
+  anti_join(atc.cln, by = c("key" = "kegg_cln"))
+dim(pf.anti)
+# another from previous attempts:
+sum(str_detect(pf.anti$key, "hcl"))
+sum(str_detect(atc.cln$kegg_cln, "hcl"))
+sum(str_detect(atc.cln$kegg_cln, "hydrochloride"))
+# "hcl" = "hydrochloride"
+pf.anti <- pf.anti %>% 
+  mutate(key = str_replace_all(key, "hcl", "hydrochloride"),
+         # same principle as hcl, "hbr" = "hydrobromide"
+         key = str_replace_all(key, "hbr", "hydrobromide"))
+hcl.semi <- pf.anti %>% 
+  semi_join(atc.cln, by = c("key" = "kegg_cln"))
+dim(hcl.semi)
+glimpse(hcl.semi %>% select(brand_name:key))
+# 431 more matches!
+matched.so.far <- matched.so.far %>% 
+  bind_rows(hcl.semi %>% select(brand_name:key))
+dim(matched.so.far)
+dim(unique(matched.so.far))
+# nice, no accidental repeats
+hcl.anti <- pf.anti %>% 
+  anti_join(atc.cln, by = c("key" = "kegg_cln"))
+dim(hcl.anti)
+hcl.anti <- hcl.anti %>% 
+  mutate(mult.slash = str_count(key, "/"),
+         mult.all = mult.slash + mult.comm + mult.dash)
+nrow(hcl.anti %>% filter(mult.all > 0))
+# a little bit of cleanup
+rm(brand.semi.t1, brand.anti.t1, generic.anti.t1, generic.semi.t1, pf.semi, pf.anti, slash.pf, hcl.semi)
+```
+
+Up to 1735 of the remaining drugs may have multiple ingredients. However, not necessarily all of them are because the characters `,` and `-` especially have different uses in drug names. The `/` character is the most straightforward currently to tackle. 
+
+```{r}
+table(hcl.anti$mult.slash)
+all.slash <- hcl.anti %>% 
+  filter(mult.slash > 0)
+no.slash <- hcl.anti %>% 
+  filter(mult.slash == 0)
+dim(all.slash)
+dim(no.slash)
+# for drugs/items not in the ATC system
+matched.other <- no.slash %>% 
+  filter(
+    key == "alcohol antiseptic pads" | key == "gauze bandage" | str_detect(key, "needle") | str_detect(key, "syring") | str_detect(key, "syringe") | str_detect(key, "insulin admin. supplies") | str_detect(key, "insulin pump cartridge") | str_detect(key, "lancets")
+    ) %>% 
+  select(brand_name:key)
+other.anti <- no.slash %>% 
+  anti_join(matched.other, by = "key")
+dim(matched.so.far)
+dim(matched.other)
+dim(other.anti)
+dim(all.slash)
+# still adds up to 4498, good
+other.anti <- other.anti %>% 
+  mutate(key = str_replace_all(key, "levonorgestrel-ethin estradiol", "levonorgestrel and ethinylestradiol"),
+         key = str_replace_all(key, "acetaminophen with codeine", "codeine and paracetamol"),
+         key = str_replace_all(key, "colistin (colistimethate na)", "colistin"),
+         key = str_replace_all(key, "cyanocobalamin (vitamin b-12)", "cyanocobalamin"),
+         key = str_replace_all(key, "desogestrel-ethinyl estradiol", "desogestrel and ethinylestradiol"),
+         key = str_replace_all(key, "doxycycline monohydrate", "doxycycline"),
+         key = str_replace_all(key, "ergocalciferol (vitamin d2)", "ergocalciferol"),
+         key = str_replace_all(key, "erythromycin base", "erythromycin"),
+         key = str_replace_all(key, "ethynodiol d-ethinyl estradiol", "etynodiol and ethinylestradiol"),
+         key = str_replace_all(key, "norethindrone-e.estradiol-iron", "norethisterone and ethinylestradiol/iron"),
+         key = str_replace_all(key, "norethindrone-ethinyl estrad", "norethisterone and ethinylestradiol"),
+         key = str_replace_all(key, "norethindrone ac-eth estradiol", "norethisterone and ethinylestradiol"),
+         key = str_replace_all(key, "norethindrone-mestranol", "norethisterone and estrogen"),
+         key = str_replace_all(key, "norgestimate-ethinyl estradiol", "norgestimate and ethinylestradiol"),
+         key = str_replace_all(key, "norgestrel-ethinyl estradiol", "norgestrel and ethinylestradiol"),
+         key = str_replace_all(key, "ondansetron hydrochloride", "ondansetron")
+         ) %>% 
+  mutate_all(str_trim)
+other.rpl.semi <- other.anti %>% 
+  semi_join(atc.cln, by = c("key" = "kegg_cln"))
+other.rpl.anti <- other.anti %>% 
+  anti_join(atc.cln, by = c("key" = "kegg_cln"))
+dim(other.rpl.semi)
+dim(other.rpl.anti)
+matched.so.far <- matched.so.far %>% 
+  bind_rows(other.rpl.semi %>% select(brand_name:key))
+rm(other.anti, other.rpl.semi)
+other.rpl.anti <- other.rpl.anti %>% 
+  mutate(mult.slash = str_count(key, "/"),
+         mult.comm = str_count(key, ","),
+         mult.dash = str_count(key, "-"),
+         mult.all = mult.slash + mult.comm + mult.dash)
+all.slash <- all.slash %>% 
+  bind_rows(other.rpl.anti %>% filter(mult.slash > 0))
+other.rpl.anti <- other.rpl.anti %>% 
+  filter(mult.slash == 0)
+```
+
+The major variables to keep track of now:
+- `matched.so.far` - list of successfully matched drugs with a `key` column that they can be matched by to the atc dataset
+- `matched.other` - "matched" medical items not in atc dataset, such as needles, syringes, and ethanol pads
+- `all.slash` - drugs definitely containing multiple ingredients separated by `/`
+- `other.rpl.anti` - misc drugs that need to be matched, may not be in atc dataset
+
+```{r}
+# sanity checks
+nrow(matched.so.far) + nrow(matched.other) + nrow(all.slash) + nrow(other.rpl.anti)
+nrow(unique(matched.so.far)) + nrow(unique(matched.other)) + nrow(unique(all.slash)) + nrow(unique(other.rpl.anti))
+# break 2
+# write_csv(bind_rows(matched.so.far, matched.other), "partD_matched_2773_break2.csv")
+# all.slash %>% 
+#   select(brand_name:key) %>% 
+#   bind_rows(
+#     other.rpl.anti %>% 
+#       select(brand_name:key)
+#     ) %>% 
+# write_csv("partD_unmatched_1725_break2.csv")
+
+table(all.slash$mult.slash)
+mult.ingred.5 <- all.slash %>% 
+  filter(mult.slash >= 4) %>% 
+  arrange(generic_name)
+glimpse(mult.ingred.5)
+# some are vitamin complexes, but some are drugs - will think about what to do with these
+# start with 2 ingredient drugs, separated by only 1 `/`
+gen.anti.2ingrd <- all.slash %>% 
+  filter(mult.slash == 1) %>% 
+  mutate(alt_copy = key) %>% 
+  separate(alt_copy, c("ingrd_1", "ingrd_2"), sep = "/") %>% 
+  select(brand_name:key, starts_with("ingrd")) %>% 
+  mutate_all(str_trim)
+glimpse(gen.anti.2ingrd)
+gen.anti.2ingrd <- gen.anti.2ingrd %>% 
+  gather("ingrd", "chem_name", 4:5) %>% 
+  arrange(key)
+glimpse(gen.anti.2ingrd)
+ingrd2.semi.t1 <- gen.anti.2ingrd %>% 
+  semi_join(atc.cln, by = c("chem_name" = "kegg_cln"))
+dim(ingrd2.semi.t1)
+ingrd2.semi.matched <- ingrd2.semi.t1 %>% 
+  group_by(brand_name, generic_name) %>% 
+  count() 
+table(ingrd2.semi.matched$n)
+# the n = 2 drugs represent those that have been fully matched, the drugs with a n = 1 have one ingredient unmatched
+ingrd2.anti.t1 <- gen.anti.2ingrd %>% 
+  anti_join(atc.cln, by = c("chem_name" = "kegg_cln")) %>% 
+  arrange(chem_name)
+dim(ingrd2.anti.t1)
+dim(ingrd2.anti.t1 %>% select(chem_name) %>% unique())
+test <- ingrd2.anti.t1 %>% select(chem_name) %>% unique() %>% arrange(chem_name)
+```
+
