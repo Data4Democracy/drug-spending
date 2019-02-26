@@ -1,5 +1,7 @@
 ## drug-spending
 
+### **Work on this project has ended.** Check out conclusions and lessons learned in [WRAP-UP.md](WRAP-UP.md).
+
 **Slack:** [#drug-spending](https://datafordemocracy.slack.com/messages/drug-spending/)
 
 [**Project Leads:**](https://github.com/Data4Democracy/read-this-first/blob/master/lead-role-description.md) 
